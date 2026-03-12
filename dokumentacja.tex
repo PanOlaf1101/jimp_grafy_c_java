@@ -1,11 +1,12 @@
-\documentclass[a4paper]{article}
+\documentclass[14pt,a4paper]{article}
 \usepackage[T1]{fontenc}
 \usepackage[polish]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage{indentfirst}
 
 \title{Dokumentacja programu do analizy grafów}
 \author{Olaf Mianowski \\ Julia Rombel}
-\date{\null}
+\date{}
 
 \begin{document}
 
@@ -18,15 +19,18 @@
 \newpage
 
 \section{Wprowadzenie}
-Zadanie polega na napisaniu dwóch aplikacji do wyznaczania grafów planarnych kolejno w C oraz w Javie. Każda z aplikacji ma wyznaczać współrzędne wierzchołków dla estetycznej wizualizacji grafu planarnego podanego w postaci listy krawędzi.
-
-Program stworzony w C obsługuje tylko powłokę tekstową użytkownika (TUI), zaś aplikacja w Javie ma pełną powłokę graficzną (GUI).
+Zadanie polega na napisaniu dwóch aplikacji do wyznaczania grafów planarnych kolejno w C oraz w Javie. Każda z aplikacji ma wyznaczać współrzędne wierzchołków dla estetycznej wizualizacji grafu planarnego podanego w postaci listy krawędzi. Program stworzony w C obsługuje tylko powłokę tekstową użytkownika (TUI), zaś aplikacja w Javie ma pełną powłokę graficzną (GUI). Ta dokumentacja skupia się tylko na programie napisanym w języku C.
 
 \section{Cel dokumentu}
+Celem programu jest wyznaczenie współrzędnych wierzchołków grafu planarnego na układzie kartezjańskimnskim w celu uzyskania wizualizacji grafu w przestrzeni dwuwymiarowej.
+
 \section{Zakres programu}
 \section{Użycie programu}
 \section{Zastosowane algorytmy}
 \section{Obsługa błedów}
+Program w przypadku napotkania się na błędy, wykorzysta funkcję \verb|error_msg()| lub \verb|verror_msg()|, która wyświetli komunikat o błędzie w postaci napisu w kolorze czerwonym "Błąd: <treść błędu>!", zwolni zaalokowaną dynamicznie pamięć i zamknie otwarte pliki (funkcja \verb|cleanup()|) oraz zakończy działanie programu.
+Funkcja \verb|error_msg()| przyjmuje tylko jeden argument: ciąg znaków będących treścią błędu. Natomiast funkcja \verb|verror_msg()| przyjmuje format z treścią o błędzie oraz dodatkowe parametry, które mogą być umieszczone w komunikacie o błędzie (podobnie działa \verb|printf()| z biblioteki standardowej).
+
 \section{Podsumowanie}
 
 \end{document}
