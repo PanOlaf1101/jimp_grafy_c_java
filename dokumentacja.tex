@@ -1,17 +1,28 @@
-\documentclass[a4paper]{article}
+\documentclass[12pt,a4paper]{article}
 \usepackage[T1]{fontenc}
 \usepackage[polish]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage{indentfirst}
+\usepackage{minted}
 
 \title{Dokumentacja programu do analizy grafów}
 \author{Olaf Mianowski \\ Julia Rombel}
+\date{}
 
 \begin{document}
 
 \maketitle
+
+\newpage
+
 \tableofcontents
+
+\newpage
+
 \section{Wprowadzenie}
-\section{Cel programu}
+Zadanie polega na napisaniu dwóch aplikacji do wyznaczania grafów planarnych kolejno w C oraz w Javie. Każda z aplikacji ma wyznaczać współrzędne wierzchołków dla estetycznej wizualizacji grafu planarnego podanego w postaci listy krawędzi. Program stworzony w C obsługuje tylko powłokę tekstową użytkownika (TUI), zaś aplikacja w Javie ma pełną powłokę graficzną (GUI). Ta dokumentacja skupia się tylko na programie napisanym w języku C.
+
+section{Cel programu}
 
 Celem programu jest wyznaczenie współrzędnych wierzchołków grafu planarnego na układzie kartezjańskimnskim w celu uzyskania wizualizacji grafu w przestrzeni dwuwymiarowej. Program przyjmuje graf w postaci pliku tekstowego, w którym zapisana jest lista krawędzi. Później na podstawie wyznaczonego algorytmu wymierza współrzędne "x" i "y" wierzchołków. Wynikiem tego działania jest stworzenie pliku tekstowego z zapisanymi parametrami.
 
@@ -29,7 +40,27 @@ Program umożliwia:
 \end{itemize}
 
 \section{Użycie programu}
+\subsection{Wywołanie}
+\noindent Program można wywołać za pomocą powłoki Bash poleceniem:
+
+\begin{minted}[]{bash}
+    ./graf -i <plik wejściowy> -o <plik wyjściowy>
+\end{minted}
+
+\noindent gdzie \verb|<plik wejściowy>| oraz \verb|<plik wyjściowy>| to nazwy plików z które zostaną wykorzystane do uzyskania danych oraz wypisaniu położenia węzłów grafu. Jeśli nie podano nazw tych plików, to domyślnie zostanie użyte standardowe wejście i wyjście (\verb|stdin| i \verb|stdout|).
+
+\subsection{Plik wejściowy}
+Plik wejściowy powinien mieć $|E|$ linii, gdzie $|E|$ oznacza liczbę krawędzi w grafie.
+Każdy wiersz musi być w formacie:
+\begin{center}
+    \scriptsize{<\textbf{nazwa krawędzi}> <\textbf{numer pierwszego wierzchołka}> <\textbf{numer drugiego wierzchołka}> <\textbf{waga krawędzi}>}
+\end{center}
+
 \section{Zastosowane algorytmy}
 \section{Obsługa błedów}
+Program, w razie wystąpienia błędu, wykorzysta funkcję \verb|error_msg()| lub \verb|verror_msg()|, która wyświetli komunikat o błędzie w postaci napisu w kolorze czerwonym "Błąd: <treść błędu>!", zwolni zaalokowaną dynamicznie pamięć i zamknie otwarte pliki (funkcja \verb|cleanup()|) oraz zakończy działanie programu.
+Funkcja \verb|error_msg()| przyjmuje tylko jeden argument: ciąg znaków będących treścią błędu. Natomiast funkcja \verb|verror_msg()| przyjmuje format z treścią o błędzie oraz dodatkowe parametry, które mogą być umieszczone w komunikacie o błędzie (podobnie działa \verb|printf()| z biblioteki standardowej).
+
 \section{Podsumowanie}
+
 \end{document}
