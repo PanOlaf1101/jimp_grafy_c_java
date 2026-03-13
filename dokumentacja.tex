@@ -5,6 +5,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{indentfirst}
 \usepackage{changepage}
+\usepackage{amsmath}
 
 \title{Dokumentacja programu do analizy grafów}
 \author{Olaf Mianowski \\ Julia Rombel}
@@ -48,7 +49,7 @@ Program umożliwia:
 \noindent gdzie \verb|<plik wejściowy>| oraz \verb|<plik wyjściowy>| to nazwy plików z które zostaną wykorzystane do uzyskania danych oraz wypisaniu położenia węzłów grafu. Jeśli nie podano nazw tych plików, to domyślnie zostanie użyte standardowe wejście i wyjście (\verb|stdin| i \verb|stdout|).
 
 \subsection{Plik wejściowy}
-Plik wejściowy powinien mieć $|E|$ linii, gdzie $|E|$ oznacza liczbę krawędzi w grafie.
+\noindent Plik wejściowy powinien mieć $|E|$ linii, gdzie $|E|$ oznacza liczbę krawędzi w grafie.
 ażdy wiersz musi być w formacie:
 
 \begin{adjustwidth}{-0.125\textwidth}{-0.125\textwidth}
@@ -58,6 +59,16 @@ ażdy wiersz musi być w formacie:
 \section{Zastosowane algorytmy}
 \subsection{Układ spektralny}
 %TODO: spectral layout
+Żeby zrozumieć metodę układu spektralnego, należy najpierw zdefionować macierz Laplace'a dla danego grafu. Taka macierz, podobnie do macierzy sąsiedztwa dla grafu $G = (V, E)$ ma rozmiary $|E| \times |E|$ i przedstawia ona informacje o stopniu danego wierzchołka i jego sąsiedzwie.
+Macierz Laplace'a $L$ dla $i$-tego wiersza oraz $j$-tej kolumny definiujemy jako:
+
+\[L_{ij} = \begin{cases}
+	\deg(i),& i = j \\
+	-1,& \text{jeżeli wierchołki o numerach $i$ oraz $j$ są połączone krawędzią} \\
+	0,& \text{w przeciwnym razie}
+\end{cases}\]
+
+Obliczywszy macierz Laplace'a, należy wyznaczyć najmniejszą oraz największą wartość własną i odpowiadające im wektory. Pierwszy wektor zawiera współrzędne w poziomie dla wszystkich wierzchołków; analogicznie drugi wektor składa się z współrzędnych pioniowych (albo vice-versa, gdyż jest to tylko kwestia umowna).
 
 \subsection{Triangulacja}
 %TODO: triangulation
