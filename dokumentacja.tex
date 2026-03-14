@@ -30,6 +30,36 @@ Program umożliwia:
 
 \section{Użycie programu}
 \section{Zastosowane algorytmy}
+
+W programie zaimplementowano dwa algorytmy wyznaczania współrzędnych wierzchołków grafu: metodę triangulacji grafu oraz Spectral Layout. Zastosowanie dwóch różnych podejść pozwala na porównanie wyników oraz ocenę jakości uzyskanej wizualizacji grafu.
+
+\subsection{Układ spektralny}
+Układ spektralny to algorytm rozmieszczania wierzchołków grafu opartym na metodach algebry liniowej. W algorytmie tym wykorzystuje się macierz Laplace’a grafu, która jest definiowana jako:
+
+$$ L = D - A $$
+
+gdzie:
+\begin{itemize}
+\item $A$ – macierz sąsiedztwa grafu,
+\item $D$ – macierz diagonalna ze stopniami wierzchołków na przekątnej,
+\item $L$ – macierz symetryczna dodatnio określona, ​​Laplace'a.
+\end{itemize}
+
+Po wyznaczeniu wartości własnych macierzy Laplace’a współrzędne wierzchołków są określane na podstawie odpowiednich wektorów własnych. Pozwala nam to uzyskać wizualizację grafu, w której wierzchołki o silniejszych powiązaniach znajdują się bliżej siebie, co poprawia czytelność przedstawienia grafu.
+
+\subsection{Triangulacja}
+
+Triangulacja grafu polega na przekształceniu grafu planarnego w taki sposób, aby wszystkie jego ściany były trójkątami. W tym celu do grafu dodawane są brakujące krawędzie pomiędzy odpowiednimi wierzchołkami, tak aby każda ściana grafu była ograniczona przez trzy krawędzie.
+
+Triangulacja upraszcza strukturę grafu oraz umożliwia łatwiejsze wyznaczenie stabilnego rozmieszczenia wierzchołków w przestrzeni dwuwymiarowej. Dzięki temu graf może zostać przedstawiony w sposób bardziej uporządkowany i czytelny.
+
 \section{Obsługa błedów}
 \section{Podsumowanie}
+
+Celem projektu było stworzenie aplikacji umożliwiającej wyznaczanie współrzędnych wierzchołków grafu planarnego na podstawie listy krawędzi zapisanej w pliku wejściowym. Program analizuje strukturę grafu i oblicza położenie wierzchołków w przestrzeni dwuwymiarowej.
+
+W projekcie zaimplementowano dwa algorytmy rozmieszczania grafów: triangulację oraz metodę Spectral Layout. Zastosowanie dwóch różnych metod pozwala na porównanie uzyskanych wyników oraz ocenę ich przydatności w wizualizacji grafów.
+
+Opracowana aplikacja umożliwia wczytanie grafu, wybór algorytmu oraz zapisanie wyników w postaci współrzędnych wierzchołków do pliku wyjściowego.
+
 \end{document}
