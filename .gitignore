@@ -57,7 +57,11 @@ dkms.conf
 #LaTex
 **/*.aux
 **/*.log
+**/*.fdb_latexmk
+**/*.fls
 **/*.pdf
+**/*.synctex.gz
+**/*.toc
 
 #VS Code
 **/*.vscode

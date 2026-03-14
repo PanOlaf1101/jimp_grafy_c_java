@@ -1,34 +1,60 @@
-\documentclass[a4paper]{article}
+\documentclass[11pt,a4paper]{article}
+\usepackage[a4paper]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[polish]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage{indentfirst}
+\usepackage{changepage}
 
 \title{Dokumentacja programu do analizy grafów}
 \author{Olaf Mianowski \\ Julia Rombel}
+\date{}
 
 \begin{document}
 
 \maketitle
+
+\newpage
+
 \tableofcontents
+
+\newpage
+
 \section{Wprowadzenie}
+Zadanie polega na napisaniu dwóch aplikacji do wyznaczania grafów planarnych kolejno w C oraz w Javie. Każda z aplikacji ma wyznaczać współrzędne wierzchołków dla estetycznej wizualizacji grafu planarnego podanego w postaci listy krawędzi. Program stworzony w C obsługuje tylko powłokę tekstową użytkownika (TUI), zaś aplikacja w Javie ma pełną powłokę graficzną (GUI). Ta dokumentacja skupia się tylko na programie napisanym w języku C.
+
 \section{Cel programu}
 
 Celem programu jest wyznaczenie współrzędnych wierzchołków grafu planarnego na układzie kartezjańskimnskim w celu uzyskania wizualizacji grafu w przestrzeni dwuwymiarowej. Program przyjmuje graf w postaci pliku tekstowego, w którym zapisana jest lista krawędzi. Później na podstawie wyznaczonego algorytmu wymierza współrzędne "x" i "y" wierzchołków. Wynikiem tego działania jest stworzenie pliku tekstowego z zapisanymi parametrami.
 
 \section{Zakres programu}
 Program umożliwia:
+
 \begin{itemize}
-
-\item \textbf sterowanie programu z listy poleceń,
-\item \textbf wczytywanie grafu z pliku tekstowego,
-\item \textbf analizę struktury grafu,
-\item \textbf wybór algorytmu rozmieszczenia grafu,
-\item \textbf wyznaczenie współrzędnych wierzchołków grafu na układzie kartezjańskim,
-\item \textbf zapis parametrów do nowego pliku tekstowego.
-
+\item \textbf{sterowanie programu z listy poleceń},
+\item \textbf{wczytywanie grafu z pliku tekstowego},
+\item \textbf{analizę struktury grafu},
+\item \textbf{wybór algorytmu rozmieszczenia grafu},
+\item \textbf{wyznaczenie współrzędnych wierzchołków grafu na układzie kartezjańskim},
+\item \textbf{zapis parametrów do nowego pliku tekstowego}.
 \end{itemize}
 
 \section{Użycie programu}
+\subsection{Wywołanie}
+\noindent Program można wywołać za pomocą powłoki Bash poleceniem:
+
+\verb|./graf -i <plik wejściowy> -o <plik wyjściowy>|
+
+\noindent gdzie \verb|<plik wejściowy>| oraz \verb|<plik wyjściowy>| to nazwy plików z które zostaną wykorzystane do uzyskania danych oraz wypisaniu położenia węzłów grafu. Jeśli nie podano nazw tych plików, to domyślnie zostanie użyte standardowe wejście i wyjście (\verb|stdin| i \verb|stdout|).
+
+\subsection{Plik wejściowy}
+Plik wejściowy powinien mieć $|E|$ linii, gdzie $|E|$ oznacza liczbę krawędzi w grafie.
+ażdy wiersz musi być w formacie:
+
+\begin{adjustwidth}{-0.125\textwidth}{-0.125\textwidth}
+\verb|<nazwa krawędzi> <numer pierwszego wierzchołka> <numer drugiego wierzchołka> <waga krawędzi>|
+\end{adjustwidth}
+
 \section{Zastosowane algorytmy}
 
 W programie zaimplementowano dwa algorytmy wyznaczania współrzędnych wierzchołków grafu: metodę triangulacji grafu oraz Spectral Layout. Zastosowanie dwóch różnych podejść pozwala na porównanie wyników oraz ocenę jakości uzyskanej wizualizacji grafu.
@@ -42,7 +68,7 @@ gdzie:
 \begin{itemize}
 \item $A$ – macierz sąsiedztwa grafu,
 \item $D$ – macierz diagonalna ze stopniami wierzchołków na przekątnej,
-\item $L$ – macierz symetryczna dodatnio określona, ​​Laplace'a.
+\item $L$ – macierz symetryczna dodatnio określona, Laplace'a.
 \end{itemize}
 
 Po wyznaczeniu wartości własnych macierzy Laplace’a współrzędne wierzchołków są określane na podstawie odpowiednich wektorów własnych. Pozwala nam to uzyskać wizualizację grafu, w której wierzchołki o silniejszych powiązaniach znajdują się bliżej siebie, co poprawia czytelność przedstawienia grafu.
@@ -54,6 +80,9 @@ Triangulacja grafu polega na przekształceniu grafu planarnego w taki sposób, a
 Triangulacja upraszcza strukturę grafu oraz umożliwia łatwiejsze wyznaczenie stabilnego rozmieszczenia wierzchołków w przestrzeni dwuwymiarowej. Dzięki temu graf może zostać przedstawiony w sposób bardziej uporządkowany i czytelny.
 
 \section{Obsługa błedów}
+Program, w razie wystąpienia błędu, wykorzysta funkcję \verb|error_msg()| (alternatywnie \verb|verror_msg()|), która wyświetli komunikat o błędzie w postaci napisu w kolorze czerwonym "Błąd: <treść błędu>!", zwolni zaalokowaną dynamicznie pamięć i zamknie otwarte pliki (funkcja \verb|cleanup()|) oraz zakończy działanie programu.
+Funkcja \verb|error_msg()| przyjmuje tylko jeden argument: ciąg znaków będących treścią błędu. Natomiast funkcja \verb|verror_msg()| przyjmuje format z treścią o błędzie oraz dodatkowe parametry, które mogą być umieszczone w komunikacie o błędzie (podobnie działa \verb|printf()| z biblioteki standardowej).
+
 \section{Podsumowanie}
 
 Celem projektu było stworzenie aplikacji umożliwiającej wyznaczanie współrzędnych wierzchołków grafu planarnego na podstawie listy krawędzi zapisanej w pliku wejściowym. Program analizuje strukturę grafu i oblicza położenie wierzchołków w przestrzeni dwuwymiarowej.
