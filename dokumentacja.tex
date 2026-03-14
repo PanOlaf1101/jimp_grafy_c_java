@@ -6,6 +6,7 @@
 \usepackage{indentfirst}
 \usepackage{changepage}
 \usepackage{amsmath}
+\usepackage{tikz}
 
 \title{Dokumentacja programu do analizy grafów}
 \author{Olaf Mianowski \\ Julia Rombel}
@@ -59,7 +60,7 @@ ażdy wiersz musi być w formacie:
 \section{Zastosowane algorytmy}
 \subsection{Układ spektralny}
 %TODO: spectral layout
-Żeby zrozumieć metodę układu spektralnego, należy najpierw zdefionować macierz Laplace'a dla danego grafu. Taka macierz, podobnie do macierzy sąsiedztwa dla grafu $G = (V, E)$ ma rozmiary $|E| \times |E|$ i przedstawia ona informacje o stopniu danego wierzchołka i jego sąsiedzwie.
+Żeby zrozumieć metodę układu spektralnego (ang. spectral layout), należy najpierw zdefionować macierz Laplace'a dla danego grafu. Taka macierz, podobnie do macierzy sąsiedztwa dla grafu $G = (V, E)$ ma rozmiary $|E| \times |E|$ i przedstawia ona informacje o stopniu danego wierzchołka i jego sąsiedzwie.
 Macierz Laplace'a $L$ dla $i$-tego wiersza oraz $j$-tej kolumny definiujemy jako:
 
 \[L_{ij} = \begin{cases}
@@ -68,7 +69,43 @@ Macierz Laplace'a $L$ dla $i$-tego wiersza oraz $j$-tej kolumny definiujemy jako
 	0,& \text{w przeciwnym razie}
 \end{cases}\]
 
-Obliczywszy macierz Laplace'a, należy wyznaczyć najmniejszą oraz największą wartość własną i odpowiadające im wektory. Pierwszy wektor zawiera współrzędne w poziomie dla wszystkich wierzchołków; analogicznie drugi wektor składa się z współrzędnych pioniowych (albo vice-versa, gdyż jest to tylko kwestia umowna).
+\noindent gdzie $\deg(i)$ to stopień wierzchołka o numerze $i$.
+
+Obliczywszy macierz Laplace'a, należy wyznaczyć dwie najmniejsze (lub dwie największe) wartości własne i odpowiadające im wektory. Pierwszy wektor zawiera współrzędne w poziomie dla wszystkich wierzchołków; analogicznie drugi wektor składa się z współrzędnych pioniowych (albo vice-versa, gdyż jest to tylko kwestia umowna). Przykładowo dla grafu:
+
+\begin{center}
+\begin{tikzpicture}[node distance={2cm}, thick, main/.style = {draw, circle}]
+	\node[main] (1) {1};
+	\node[main] (2) [above of=1] {2};
+	\node[main] (3) [below left of=1] {3};
+	\node[main] (4) [below right of=1] {4};
+	\draw (1) -- (2);
+	\draw (1) -- (3);
+	\draw (1) -- (4);
+	\draw (2) -- (3);
+\end{tikzpicture}
+\end{center}
+
+\noindent Macierz Laplace'a będzie wyglądać następująco:
+\[\begin{bmatrix}
+	3 & -1 & -1 & -1 \\
+	-1 & 2 & -1 & 0 \\
+	-1 & -1 & 2 & 0 \\
+	-1 & 0 & 0 & 1
+\end{bmatrix}\]
+
+\noindent Wartość własną $\lambda$ można wyliczyć ze wzoru:
+\[\det(L - \lambda I) = 0\]
+\[\det(L - \lambda I) = \begin{vmatrix}
+	3 - \lambda & -1 & -1 & -1 \\
+	-1 & 2 - \lambda & -1 & 0 \\
+	-1 & -1 & 2 - \lambda & 0 \\
+	-1 & 0 & 0 & 1 - \lambda
+\end{vmatrix}\]
+\noindent Co po rozwiązaniu daje 4 różne wartości własne:
+\begin{center}
+\(\lambda_1 = 0\) \quad \(\lambda_2 = 1\) \quad \(\lambda_3 = 3\) \quad \(\lambda_4 = 4\)
+\end{center}
 
 \subsection{Triangulacja}
 %TODO: triangulation
