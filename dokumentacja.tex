@@ -5,6 +5,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage{indentfirst}
 \usepackage{changepage}
+\usepackage{amsmath}
+\usepackage{tikz}
 
 \title{Dokumentacja programu do analizy grafów}
 \author{Olaf Mianowski \\ Julia Rombel}
@@ -48,7 +50,7 @@ Program umożliwia:
 \noindent gdzie \verb|<plik wejściowy>| oraz \verb|<plik wyjściowy>| to nazwy plików z które zostaną wykorzystane do uzyskania danych oraz wypisaniu położenia węzłów grafu. Jeśli nie podano nazw tych plików, to domyślnie zostanie użyte standardowe wejście i wyjście (\verb|stdin| i \verb|stdout|).
 
 \subsection{Plik wejściowy}
-Plik wejściowy powinien mieć $|E|$ linii, gdzie $|E|$ oznacza liczbę krawędzi w grafie.
+\noindent Plik wejściowy powinien mieć $|E|$ linii, gdzie $|E|$ oznacza liczbę krawędzi w grafie.
 ażdy wiersz musi być w formacie:
 
 \begin{adjustwidth}{-0.125\textwidth}{-0.125\textwidth}
@@ -64,17 +66,66 @@ Układ spektralny to algorytm rozmieszczania wierzchołków grafu opartym na met
 
 $$ L = D - A $$
 
-gdzie:
+\noindent gdzie:
 \begin{itemize}
 \item $A$ – macierz sąsiedztwa grafu,
 \item $D$ – macierz diagonalna ze stopniami wierzchołków na przekątnej,
 \item $L$ – macierz symetryczna dodatnio określona, Laplace'a.
 \end{itemize}
 
-Po wyznaczeniu wartości własnych macierzy Laplace’a współrzędne wierzchołków są określane na podstawie odpowiednich wektorów własnych. Pozwala nam to uzyskać wizualizację grafu, w której wierzchołki o silniejszych powiązaniach znajdują się bliżej siebie, co poprawia czytelność przedstawienia grafu.
+Macierz sąsiedztwa to macierz opisująca graf $G = (V, E)$ ze zbiorem wierzchołków $V = \{v_1, v_2, \ldots, v_n\}$ oraz zbiorem krawędzi $E \subset \{(i, j) \in V^2\}$, którą można określić matematycznie dla $i$-tego wiersza i $j$-tej kolumny wzorem:
+
+\[A_{ij} = \begin{cases}
+	0,& (i, j) \notin E \\
+	1,& (i, j) \in E
+\end{cases}\]
+
+Po wyznaczeniu wartości własnych macierzy Laplace’a współrzędne wierzchołków są określane na podstawie odpowiednich wektorów własnych. Pozwala nam to uzyskać wizualizację grafu, w której wierzchołki o silniejszych powiązaniach znajdują się bliżej siebie, co poprawia czytelność przedstawienia grafu. Macierz Laplace'a można zdefiniować dla $i$-tego wiersza i $j$-tej kolumny w poniższy sposób:
+\[L_{ij} = \begin{cases}
+	\deg(i),& i = j \\
+	-1,& \text{jeżeli wierchołki o numerach $i$ oraz $j$ są połączone krawędzią} \\
+	0,& \text{w przeciwnym razie}
+\end{cases}\]
+
+\noindent gdzie $\deg(i)$ to stopień wierzchołka o numerze $i$.
+
+Obliczywszy macierz Laplace'a, należy wyznaczyć dwie najmniejsze (lub dwie największe) wartości własne i odpowiadające im wektory. Pierwszy wektor zawiera współrzędne w poziomie dla wszystkich wierzchołków; analogicznie drugi wektor składa się z współrzędnych pioniowych (albo vice-versa, gdyż jest to tylko kwestia umowna). Przykładowo dla grafu:
+
+\begin{center}
+\begin{tikzpicture}[node distance={2cm}, thick, main/.style = {draw, circle}]
+	\node[main] (1) {1};
+	\node[main] (2) [above of=1] {2};
+	\node[main] (3) [below left of=1] {3};
+	\node[main] (4) [below right of=1] {4};
+	\draw (1) -- (2);
+	\draw (1) -- (3);
+	\draw (1) -- (4);
+	\draw (2) -- (3);
+\end{tikzpicture}
+\end{center}
+
+\noindent Macierz Laplace'a będzie wyglądać następująco:
+\[\begin{bmatrix}
+	3 & -1 & -1 & -1 \\
+	-1 & 2 & -1 & 0 \\
+	-1 & -1 & 2 & 0 \\
+	-1 & 0 & 0 & 1
+\end{bmatrix}\]
+
+\noindent Wartość własną $\lambda$ można wyliczyć ze wzoru:
+\[\det(L - \lambda I) = 0\]
+\[\det(L - \lambda I) = \begin{vmatrix}
+	3 - \lambda & -1 & -1 & -1 \\
+	-1 & 2 - \lambda & -1 & 0 \\
+	-1 & -1 & 2 - \lambda & 0 \\
+	-1 & 0 & 0 & 1 - \lambda
+\end{vmatrix}\]
+\noindent Co po rozwiązaniu daje 4 różne wartości własne:
+\begin{center}
+\(\lambda_1 = 0\) \quad \(\lambda_2 = 1\) \quad \(\lambda_3 = 3\) \quad \(\lambda_4 = 4\)
+\end{center}
 
 \subsection{Triangulacja}
-
 Triangulacja grafu polega na przekształceniu grafu planarnego w taki sposób, aby wszystkie jego ściany były trójkątami. W tym celu do grafu dodawane są brakujące krawędzie pomiędzy odpowiednimi wierzchołkami, tak aby każda ściana grafu była ograniczona przez trzy krawędzie.
 
 Triangulacja upraszcza strukturę grafu oraz umożliwia łatwiejsze wyznaczenie stabilnego rozmieszczenia wierzchołków w przestrzeni dwuwymiarowej. Dzięki temu graf może zostać przedstawiony w sposób bardziej uporządkowany i czytelny.
