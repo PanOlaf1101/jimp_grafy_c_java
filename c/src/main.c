@@ -21,7 +21,7 @@ void read_config(char *arg[], int n) {
 
 			conf.input_file = fopen(arg[i], "r");
 			if(conf.input_file == NULL)
-				verror_msg("Nie można otworzyć pliku \"%s\"", arg[i]);
+				verror_msg("Nie można otworzyć pliku wejściowego \"%s\"", arg[i]);
 		} else if(strcmp(arg[i], "-o") == 0) {
 			if(++i >= n)
 				error_msg("Nie podano nazwy pliku wyjściowego");
@@ -30,10 +30,14 @@ void read_config(char *arg[], int n) {
 
 			conf.output_file = fopen(arg[i], "w");
 			if(conf.output_file == NULL)
-				verror_msg("Nie można otworzyć pliku \"%s\"", arg[i]);
+				verror_msg("Nie można otworzyć pliku wyjściowego \"%s\"", arg[i]);
 		} else
 			verror_msg("Podano niepoprawny argument: \"%s\"", arg[i]);
 	}
+	if(conf.input_file == NULL)
+		conf.input_file = stdin;
+	if(conf.output_file == NULL)
+		conf.output_file = stdout;
 }
 
 void cleanup(void) {
