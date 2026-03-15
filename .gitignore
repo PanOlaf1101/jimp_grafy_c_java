@@ -30,6 +30,7 @@
 **/*.dylib
 
 # Executables
+c/graf
 **/*.exe
 **/*.out
 **/*.app

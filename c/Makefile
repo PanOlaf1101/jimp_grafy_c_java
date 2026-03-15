@@ -3,8 +3,8 @@ OBJ = $(SRC:.c=.o)
 
 CFLAGS = -Wall -Werror -Wextra -O2 -std=c11
 
-a.out: $(OBJ)
-	$(CC) $(CFLAGS) $^
+graf: $(OBJ)
+	$(CC) $(CFLAGS) -o graf $^
 
 src/%.o: src/%.c
 	$(CC) $(CLAGS) -o $@ -c $<
