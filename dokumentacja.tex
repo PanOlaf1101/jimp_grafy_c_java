@@ -1,5 +1,5 @@
 \documentclass[11pt,a4paper]{article}
-\usepackage[a4paper,top=2.5cm,left=2.5cm]{geometry}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=1.5cm,right=1.5cm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[polish]{babel}
 \usepackage[utf8]{inputenc}
@@ -45,16 +45,31 @@ Program umożliwia:
 \subsection{Wywołanie}
 \noindent Program można wywołać za pomocą powłoki Bash poleceniem:
 
-\verb|./graf -i <plik wejściowy> -o <plik wyjściowy>|
+\verb|./graf -i <plik wejściowy> -o <plik wyjściowy> -a <algorytm>|
 
-\noindent gdzie \verb|<plik wejściowy>| oraz \verb|<plik wyjściowy>| to nazwy plików z które zostaną wykorzystane do uzyskania danych oraz wypisaniu położenia węzłów grafu. Jeśli nie podano nazw tych plików, to domyślnie zostanie użyte standardowe wejście i wyjście (\verb|stdin| i \verb|stdout|).
+\begin{center}
+\begin{tabular}{ |p{1cm}|p{0.18\linewidth}|p{0.68\linewidth}| }
+\hline
+-i & dane wejściowe & nazwa pliku z danymi wejściowymi. Jeśli nie został podany, to domyślnie będzie to \texttt{stdin} \\
+\hline
+-o & dane wyjściowe & nazwa pliku do którego ma zostać zapisany wynik działania programu. Jeśli nie podano, to domyślnym wyjściem będzie \texttt{stdout} \\
+\hline
+-a & wybór algorytmu & litera oznaczająca, który algorytm ma być użyty przy wyznaczaniu położenia wierchołków:
+\begin{itemize}
+\item \textbf{s} - Spectral layout
+\item \textbf{t} - Triangulacja
+\end{itemize} \\
+\hline
+\end{tabular}
+\end{center}
+%\noindent gdzie \verb|<plik wejściowy>| oraz \verb|<plik wyjściowy>| to nazwy plików z które zostaną wykorzystane do uzyskania danych oraz wypisaniu położenia węzłów grafu. Jeśli nie podano nazw tych plików, to domyślnie zostanie użyte standardowe wejście i wyjście (\verb|stdin| i \verb|stdout|).
 
 \subsection{Plik wejściowy}
 \noindent Plik wejściowy powinien mieć $|E|$ linii, gdzie $|E|$ oznacza liczbę krawędzi w grafie.
 ażdy wiersz musi być w formacie:
 
-\begin{adjustwidth}{-0.0625\textwidth}{-0.0625\textwidth}
-\verb|<nazwa krawędzi> <numer pierwszego wierzchołka> <numer drugiego wierzchołka> <waga krawędzi>|
+\begin{adjustwidth}{-0.05\textwidth}{-0.05\textwidth}
+\centering \verb|<nazwa krawędzi> <numer pierwszego wierzchołka> <numer drugiego wierzchołka> <waga krawędzi>|
 \end{adjustwidth}
 
 \section{Zastosowane algorytmy}
@@ -68,9 +83,9 @@ $$ L = D - A $$
 
 \noindent gdzie:
 \begin{itemize}
-\item $A$ – macierz sąsiedztwa grafu,
-\item $D$ – macierz diagonalna ze stopniami wierzchołków na przekątnej,
-\item $L$ – macierz symetryczna dodatnio określona, Laplace'a.
+\item $A$ - macierz sąsiedztwa grafu,
+\item $D$ - macierz diagonalna ze stopniami wierzchołków na przekątnej,
+\item $L$ - macierz symetryczna dodatnio określona, Laplace'a.
 \end{itemize}
 
 Macierz sąsiedztwa to macierz opisująca graf nieskierowany $G = (V, E)$ ze zbiorem wierzchołków $V = \{v_1, v_2, \ldots, v_n\}$ oraz zbiorem krawędzi $E \subset V^2$, którą można określić matematycznie dla $i$-tego wiersza i $j$-tej kolumny wzorem:
@@ -80,7 +95,7 @@ Macierz sąsiedztwa to macierz opisująca graf nieskierowany $G = (V, E)$ ze zbi
 	1,& (i, j) \in E
 \end{cases}\]
 
-\noindent (Uwaga: zakładamy, że $\forall_{n \in V} (n, n) \notin E$)
+\noindent (Uwaga: zakładamy, że $\forall_{n \in V} (n, n) \notin E$ oraz $(i,j) \in E \iff (j,i) \in E$)
 
 Po wyznaczeniu wartości własnych macierzy Laplace’a współrzędne wierzchołków są określane na podstawie odpowiednich wektorów własnych. Pozwala nam to uzyskać wizualizację grafu, w której wierzchołki o silniejszych powiązaniach znajdują się bliżej siebie, co poprawia czytelność przedstawienia grafu. Macierz Laplace'a można zdefiniować dla $i$-tego wiersza i $j$-tej kolumny w poniższy sposób:
 \[L_{ij} = \begin{cases}
@@ -95,7 +110,9 @@ Obliczywszy macierz Laplace'a, należy wyznaczyć dwie najmniejsze (lub dwie naj
 
 \begin{center}
 \(G = (V, E)\) \quad \(V = \{A, B, C, D\}\) \quad \(E = \{(A, B), (A, C), (A, D), (C, D)\}\)
-\\
+
+\vspace{1cm}
+
 \begin{tikzpicture}[node distance={2cm}, thick, main/.style = {draw, circle, fill=cyan!45}]
 	\node[main] (1) {\textbf{A}};
 	\node[main] (2) [above right of=1] {\textbf{B}};
@@ -116,7 +133,7 @@ Obliczywszy macierz Laplace'a, należy wyznaczyć dwie najmniejsze (lub dwie naj
 	-1 & 0 & -1 & 2
 \end{bmatrix}\]
 
-\noindent Wartość własną $\lambda$ można wyliczyć ze wzoru:
+\noindent Wartość własną $\lambda$ można wyliczyć ze wzoru:
 \[\det(L - \lambda I) = 0\]
 \[\det(L - \lambda I) = \begin{vmatrix}
 	3 - \lambda & -1 & -1 & -1 \\
@@ -149,14 +166,16 @@ Triangulacja grafu polega na przekształceniu grafu planarnego w taki sposób, a
 Triangulacja upraszcza strukturę grafu oraz umożliwia łatwiejsze wyznaczenie stabilnego rozmieszczenia wierzchołków w przestrzeni dwuwymiarowej. Dzięki temu graf może zostać przedstawiony w sposób bardziej uporządkowany i czytelny.
 
 \section{Obsługa błedów}
-Program, w razie wystąpienia błędu, wykorzysta funkcję \verb|error_msg()| (alternatywnie \verb|verror_msg()|), która wyświetli komunikat o błędzie w postaci napisu w kolorze czerwonym "Błąd: <treść błędu>!", zwolni zaalokowaną dynamicznie pamięć i zamknie otwarte pliki (funkcja \verb|cleanup()|) oraz zakończy działanie programu.
+Program, w razie wystąpienia błędu, wykorzysta funkcję \verb|error_msg()| (alternatywnie \verb|verror_msg()|), która wyświetli komunikat o błędzie w postaci napisu w kolorze czerwonym "Błąd: <treść błędu>!", zwolni zaalokowaną dynamicznie pamięć i zamknie otwarte pliki (za pomocą funkcji \verb|cleanup()|) oraz zakończy działanie programu.
 Funkcja \verb|error_msg()| przyjmuje tylko jeden argument: ciąg znaków będących treścią błędu. Natomiast funkcja \verb|verror_msg()| przyjmuje format z treścią o błędzie oraz dodatkowe parametry, które mogą być umieszczone w komunikacie o błędzie (podobnie działa \verb|printf()| z biblioteki standardowej).
 
 \subsection*{Lista komunikatów o błędach:}
 \begin{itemize}
 \item Błąd alokacji pamięci na stercie: \textbf{\textcolor{red}{Błąd: Nie można zaalokować pamięci!}}
 \item Niepodanie nazwy pliku: \textbf{\textcolor{red}{Błąd: Nie podano nazwy pliku wejściowego!}} lub \textbf{\textcolor{red}{Błąd: Nie podano nazwy pliku wyjściowego!}}
-\item Niemożność otwarcia pliku o podanej nazwie: \textbf{\textcolor{red}{Błąd: Nie można otworzyć pliku wejściowego ""<nazwa pliku">"!}} lub \textbf{\textcolor{red}{Błąd: Nie można otworzyć pliku wyjściowego ""<nazwa pliku">"!}}
+\item Niemożność otwarcia pliku o podanej nazwie: \textbf{\textcolor{red}{Błąd: Nie można otworzyć pliku wejściowego "<nazwa pliku">!}} lub \textbf{\textcolor{red}{Błąd: Nie można otworzyć pliku wyjściowego "<nazwa pliku">!}}
+\item Niepodanie algorytmu umiejscowienia wierzchołków: \textbf{\textcolor{red}{Błąd: Nie podano algorytmu!}}
+\item Nepoprawna nazwa algorytmu: \textbf{\textcolor{red}{Błąd: Podano niepoprawny kod algorytmu: "<kod algorytmu"> Wpisz "t" lub "s"!}}
 \end{itemize}
 
 \section{Podsumowanie}
