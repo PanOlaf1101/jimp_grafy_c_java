@@ -1,6 +1,18 @@
 #include <stdlib.h>
 #include "graph.h"
 
+struct Edge {
+    int u;
+    int v;
+    double w;
+};
+
+struct Graph {
+    int n_vertices;
+    int n_edges;
+    Edge *edges;
+};
+
 Graph create_graph(int max_edges) {
     Graph g;
     g.n_vertices = 0;
@@ -10,6 +22,7 @@ Graph create_graph(int max_edges) {
 }
 
 void add_edge(Graph *g, int u, int v, double w) {
+
     g->edges[g->n_edges].u = u;
     g->edges[g->n_edges].v = v;
     g->edges[g->n_edges].w = w;
@@ -22,4 +35,5 @@ void add_edge(Graph *g, int u, int v, double w) {
 
 void free_graph(Graph *g) {
     free(g->edges);
+    g->edges = NULL;
 }
