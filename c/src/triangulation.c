@@ -1,52 +1,26 @@
-#include <stdio.h>
+#include "triangulation.h"
 #include "graph.h"
 
-static int edge_exists(Graph *g, int u, int v)
-{
-	for (int i = 0; i < g->n_edges; i++) {
+void triangulate(Graph *g) {
 
-		if ((g->edges[i].u == u && g->edges[i].v == v) ||
-		    (g->edges[i].u == v && g->edges[i].v == u)) {
+    int original_edges = g->n_edges;
 
-			return 1;
-		}
-	}
+    for (int i = 0; i < original_edges; i++) {
+        for (int j = i + 1; j < original_edges; j++) {
 
-	return 0;
-}
+            int a = g->edges[i].u;
+            int b = g->edges[i].v;
 
-void triangulate_graph(Graph *g)
-{
-	int max_edges = 3 * g->n_vertices - 6;
+            int c = g->edges[j].u;
+            int d = g->edges[j].v;
 
-	for (int i = 0; i < g->n_edges; i++) {
+            if (b == c) {
+                add_edge(g, a, d, 1.0);
+            }
 
-		for (int j = i + 1; j < g->n_edges; j++) {
-
-			if (g->n_edges >= max_edges)
-				return;
-
-			int a = g->edges[i].u;
-			int b = g->edges[i].v;
-
-			int c = g->edges[j].u;
-			int d = g->edges[j].v;
-
-			if (b == c) {
-
-				if (!edge_exists(g, a, d)) {
-
-					add_edge(g, a, d, 1.0);
-				}
-			}
-
-			if (a == d) {
-
-				if (!edge_exists(g, b, c)) {
-
-					add_edge(g, b, c, 1.0);
-				}
-			}
-		}
-	}
+            if (a == d) {
+                add_edge(g, c, b, 1.0);
+            }
+        }
+    }
 }
