@@ -1,14 +1,17 @@
 \documentclass[11pt,a4paper]{article}
-\usepackage[a4paper]{geometry}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=1.5cm,right=1.5cm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[polish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{indentfirst}
 \usepackage{changepage}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{xcolor}
 
 \title{Dokumentacja programu do analizy grafów}
 \author{Olaf Mianowski \\ Julia Rombel}
-\date{}
+\date{2026-03-17}
 
 \begin{document}
 
@@ -24,8 +27,7 @@
 Zadanie polega na napisaniu dwóch aplikacji do wyznaczania grafów planarnych kolejno w C oraz w Javie. Każda z aplikacji ma wyznaczać współrzędne wierzchołków dla estetycznej wizualizacji grafu planarnego podanego w postaci listy krawędzi. Program stworzony w C obsługuje tylko powłokę tekstową użytkownika (TUI), zaś aplikacja w Javie ma pełną powłokę graficzną (GUI). Ta dokumentacja skupia się tylko na programie napisanym w języku C.
 
 \section{Cel programu}
-
-Celem programu jest wyznaczenie współrzędnych wierzchołków grafu planarnego na układzie kartezjańskimnskim w celu uzyskania wizualizacji grafu w przestrzeni dwuwymiarowej. Program przyjmuje graf w postaci pliku tekstowego, w którym zapisana jest lista krawędzi. Później na podstawie wyznaczonego algorytmu wymierza współrzędne "x" i "y" wierzchołków. Wynikiem tego działania jest stworzenie pliku tekstowego z zapisanymi parametrami.
+Celem programu jest wyznaczenie współrzędnych wierzchołków grafu planarnego na układzie kartezjańskimnskim w celu uzyskania wizualizacji grafu w przestrzeni dwuwymiarowej. Program przyjmuje graf w postaci pliku tekstowego, w którym zapisana jest lista krawędzi. Później na podstawie wyznaczonego algorytmu wymierza współrzędne $x$ i $y$ wierzchołków. Wynikiem tego działania jest stworzenie pliku tekstowego z zapisanymi parametrami.
 
 \section{Zakres programu}
 Program umożliwia:
@@ -43,16 +45,31 @@ Program umożliwia:
 \subsection{Wywołanie}
 \noindent Program można wywołać za pomocą powłoki Bash poleceniem:
 
-\verb|./graf -i <plik wejściowy> -o <plik wyjściowy>|
+\verb|./graf -i <plik wejściowy> -o <plik wyjściowy> -a <algorytm>|
 
-\noindent gdzie \verb|<plik wejściowy>| oraz \verb|<plik wyjściowy>| to nazwy plików z które zostaną wykorzystane do uzyskania danych oraz wypisaniu położenia węzłów grafu. Jeśli nie podano nazw tych plików, to domyślnie zostanie użyte standardowe wejście i wyjście (\verb|stdin| i \verb|stdout|).
+\begin{center}
+\begin{tabular}{ |p{1cm}|p{0.18\linewidth}|p{0.68\linewidth}| }
+\hline
+-i & dane wejściowe & nazwa pliku z danymi wejściowymi. Jeśli nie został podany, to domyślnie będzie to \texttt{stdin} \\
+\hline
+-o & dane wyjściowe & nazwa pliku do którego ma zostać zapisany wynik działania programu. Jeśli nie podano, to domyślnym wyjściem będzie \texttt{stdout} \\
+\hline
+-a & wybór algorytmu & litera oznaczająca, który algorytm ma być użyty przy wyznaczaniu położenia wierchołków:
+\begin{itemize}
+\item \textbf{s} - Spectral layout
+\item \textbf{t} - Triangulacja
+\end{itemize} \\
+\hline
+\end{tabular}
+\end{center}
+%\noindent gdzie \verb|<plik wejściowy>| oraz \verb|<plik wyjściowy>| to nazwy plików z które zostaną wykorzystane do uzyskania danych oraz wypisaniu położenia węzłów grafu. Jeśli nie podano nazw tych plików, to domyślnie zostanie użyte standardowe wejście i wyjście (\verb|stdin| i \verb|stdout|).
 
 \subsection{Plik wejściowy}
-Plik wejściowy powinien mieć $|E|$ linii, gdzie $|E|$ oznacza liczbę krawędzi w grafie.
+\noindent Plik wejściowy powinien mieć $|E|$ linii, gdzie $|E|$ oznacza liczbę krawędzi w grafie.
 ażdy wiersz musi być w formacie:
 
-\begin{adjustwidth}{-0.125\textwidth}{-0.125\textwidth}
-\verb|<nazwa krawędzi> <numer pierwszego wierzchołka> <numer drugiego wierzchołka> <waga krawędzi>|
+\begin{adjustwidth}{-0.05\textwidth}{-0.05\textwidth}
+\centering \verb|<nazwa krawędzi> <numer pierwszego wierzchołka> <numer drugiego wierzchołka> <waga krawędzi>|
 \end{adjustwidth}
 
 \section{Zastosowane algorytmy}
@@ -64,27 +81,104 @@ Układ spektralny to algorytm rozmieszczania wierzchołków grafu opartym na met
 
 $$ L = D - A $$
 
-gdzie:
+\noindent gdzie:
 \begin{itemize}
-\item $A$ – macierz sąsiedztwa grafu,
-\item $D$ – macierz diagonalna ze stopniami wierzchołków na przekątnej,
-\item $L$ – macierz symetryczna dodatnio określona, Laplace'a.
+\item $A$ - macierz sąsiedztwa grafu,
+\item $D$ - macierz diagonalna ze stopniami wierzchołków na przekątnej,
+\item $L$ - macierz symetryczna dodatnio określona, Laplace'a.
 \end{itemize}
 
-Po wyznaczeniu wartości własnych macierzy Laplace’a współrzędne wierzchołków są określane na podstawie odpowiednich wektorów własnych. Pozwala nam to uzyskać wizualizację grafu, w której wierzchołki o silniejszych powiązaniach znajdują się bliżej siebie, co poprawia czytelność przedstawienia grafu.
+Macierz sąsiedztwa to macierz opisująca graf nieskierowany $G = (V, E)$ ze zbiorem wierzchołków $V = \{v_1, v_2, \ldots, v_n\}$ oraz zbiorem krawędzi $E \subset V^2$, którą można określić matematycznie dla $i$-tego wiersza i $j$-tej kolumny wzorem:
+
+\[A_{ij} = \begin{cases}
+	0,& (i, j) \notin E \\
+	1,& (i, j) \in E
+\end{cases}\]
+
+\noindent (Uwaga: zakładamy, że $\forall_{n \in V} (n, n) \notin E$ oraz $(i,j) \in E \iff (j,i) \in E$)
+
+Po wyznaczeniu wartości własnych macierzy Laplace’a współrzędne wierzchołków są określane na podstawie odpowiednich wektorów własnych. Pozwala nam to uzyskać wizualizację grafu, w której wierzchołki o silniejszych powiązaniach znajdują się bliżej siebie, co poprawia czytelność przedstawienia grafu. Macierz Laplace'a można zdefiniować dla $i$-tego wiersza i $j$-tej kolumny w poniższy sposób:
+\[L_{ij} = \begin{cases}
+	\deg(i),& i = j \\
+	-1,& i \neq j \land [(i, j) \in E \lor (j, i) \in E] \\
+	0,& i \neq j \land [(i, j) \notin E \land (j, i) \notin E]
+\end{cases}\]
+
+\noindent gdzie $\deg(i)$ to stopień wierzchołka o numerze $i$.
+
+Obliczywszy macierz Laplace'a, należy wyznaczyć dwie najmniejsze (lub dwie największe) wartości własne i odpowiadające im wektory. Pierwszy wektor zawiera współrzędne w poziomie dla wszystkich wierzchołków; analogicznie drugi wektor składa się z współrzędnych pioniowych (albo vice-versa, gdyż jest to tylko kwestia umowna). Przykładowo dla grafu:
+
+\begin{center}
+\(G = (V, E)\) \quad \(V = \{A, B, C, D\}\) \quad \(E = \{(A, B), (A, C), (A, D), (C, D)\}\)
+
+\vspace{1cm}
+
+\begin{tikzpicture}[node distance={2cm}, thick, main/.style = {draw, circle, fill=cyan!45}]
+	\node[main] (1) {\textbf{A}};
+	\node[main] (2) [above right of=1] {\textbf{B}};
+	\node[main] (3) [above left of=1] {\textbf{C}};
+	\node[main] (4) [above of=1] {\textbf{D}};
+	\draw (1) -- (2);
+	\draw (1) -- (3);
+	\draw (1) -- (4);
+	\draw (3) -- (4);
+\end{tikzpicture}
+\end{center}
+
+\noindent Macierz Laplace'a będzie wyglądać następująco:
+\[\begin{bmatrix}
+	3 & -1 & -1 & -1 \\
+	-1 & 1 & 0 & 0 \\
+	-1 & 0 & 2 & -1 \\
+	-1 & 0 & -1 & 2
+\end{bmatrix}\]
+
+\noindent Wartość własną $\lambda$ można wyliczyć ze wzoru:
+\[\det(L - \lambda I) = 0\]
+\[\det(L - \lambda I) = \begin{vmatrix}
+	3 - \lambda & -1 & -1 & -1 \\
+	-1 & 1 - \lambda & 0 & 0 \\
+	-1 & 0 & 2 - \lambda & -1 \\
+	-1 & 0 & -1 & 2 - \lambda
+\end{vmatrix}\]
+
+\noindent Co po rozwiązaniu daje 4 różne wartości własne:
+\begin{center}
+\(\lambda_1 = 0\) \quad \(\lambda_2 = 1\) \quad \(\lambda_3 = 3\) \quad \(\lambda_4 = 4\)
+\end{center}
+
+\noindent oraz odpowiadające im wektory własne:
+\begin{center}
+\(v_1 = (1, 1, 1, 1)\) \quad \(v_2 = (0, -2, 1, 1)\) \\
+\(v_3 = (0, 0, -1, 1)\) \quad \(v_4 = (-3, 1, 1, 1)\)
+\end{center}
+
+\noindent Wybierając wektory $v_3$ oraz $v_4$ by określić położenie wierzchołków w grafie w poziomie oraz w pionie, otrzymujemy:
+\begin{center}
+\(A = (0, -3)\) \quad \(B = (1, 1)\) \\
+\(C = (-1, 1)\) \quad \(D = (0, 1)\)
+\end{center}
+\noindent Przy przypisywaniu położenia z wektorów, wierzchołki zostały posortowane malejąco na podstawie ich stopni.
 
 \subsection{Triangulacja}
-
 Triangulacja grafu polega na przekształceniu grafu planarnego w taki sposób, aby wszystkie jego ściany były trójkątami. W tym celu do grafu dodawane są brakujące krawędzie pomiędzy odpowiednimi wierzchołkami, tak aby każda ściana grafu była ograniczona przez trzy krawędzie.
 
 Triangulacja upraszcza strukturę grafu oraz umożliwia łatwiejsze wyznaczenie stabilnego rozmieszczenia wierzchołków w przestrzeni dwuwymiarowej. Dzięki temu graf może zostać przedstawiony w sposób bardziej uporządkowany i czytelny.
 
 \section{Obsługa błedów}
-Program, w razie wystąpienia błędu, wykorzysta funkcję \verb|error_msg()| (alternatywnie \verb|verror_msg()|), która wyświetli komunikat o błędzie w postaci napisu w kolorze czerwonym "Błąd: <treść błędu>!", zwolni zaalokowaną dynamicznie pamięć i zamknie otwarte pliki (funkcja \verb|cleanup()|) oraz zakończy działanie programu.
+Program, w razie wystąpienia błędu, wykorzysta funkcję \verb|error_msg()| (alternatywnie \verb|verror_msg()|), która wyświetli komunikat o błędzie w postaci napisu w kolorze czerwonym "Błąd: <treść błędu>!", zwolni zaalokowaną dynamicznie pamięć i zamknie otwarte pliki (za pomocą funkcji \verb|cleanup()|) oraz zakończy działanie programu.
 Funkcja \verb|error_msg()| przyjmuje tylko jeden argument: ciąg znaków będących treścią błędu. Natomiast funkcja \verb|verror_msg()| przyjmuje format z treścią o błędzie oraz dodatkowe parametry, które mogą być umieszczone w komunikacie o błędzie (podobnie działa \verb|printf()| z biblioteki standardowej).
 
-\section{Podsumowanie}
+\subsection*{Lista komunikatów o błędach:}
+\begin{itemize}
+\item Błąd alokacji pamięci na stercie: \textbf{\textcolor{red}{Błąd: Nie można zaalokować pamięci!}}
+\item Niepodanie nazwy pliku: \textbf{\textcolor{red}{Błąd: Nie podano nazwy pliku wejściowego!}} lub \textbf{\textcolor{red}{Błąd: Nie podano nazwy pliku wyjściowego!}}
+\item Niemożność otwarcia pliku o podanej nazwie: \textbf{\textcolor{red}{Błąd: Nie można otworzyć pliku wejściowego "<nazwa pliku">!}} lub \textbf{\textcolor{red}{Błąd: Nie można otworzyć pliku wyjściowego "<nazwa pliku">!}}
+\item Niepodanie algorytmu umiejscowienia wierzchołków: \textbf{\textcolor{red}{Błąd: Nie podano algorytmu!}}
+\item Nepoprawna nazwa algorytmu: \textbf{\textcolor{red}{Błąd: Podano niepoprawny kod algorytmu: "<kod algorytmu"> Wpisz "t" lub "s"!}}
+\end{itemize}
 
+\section{Podsumowanie}
 Celem projektu było stworzenie aplikacji umożliwiającej wyznaczanie współrzędnych wierzchołków grafu planarnego na podstawie listy krawędzi zapisanej w pliku wejściowym. Program analizuje strukturę grafu i oblicza położenie wierzchołków w przestrzeni dwuwymiarowej.
 
 W projekcie zaimplementowano dwa algorytmy rozmieszczania grafów: triangulację oraz metodę Spectral Layout. Zastosowanie dwóch różnych metod pozwala na porównanie uzyskanych wyników oraz ocenę ich przydatności w wizualizacji grafów.

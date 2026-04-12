@@ -1,7 +1,7 @@
 #ifndef TRIANGULATION_H
 #define TRIANGULATION_H
 
-typedef struct Graph Graph;
+#include "graph.h" 
 
 void triangulate(Graph *g);
 
