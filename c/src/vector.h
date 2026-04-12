@@ -5,8 +5,10 @@
 
 size_t malloc_size(const void *ptr);
 
+typedef double vec_elem_t;
+
 typedef struct Vector {
-	int *ptr;
+	vec_elem_t *ptr;
 	size_t size;
 } Vector;
 
