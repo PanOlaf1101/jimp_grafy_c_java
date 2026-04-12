@@ -7,6 +7,7 @@ Graph create_graph(int max_edges) {
     g.n_vertices = 0;
     g.n_edges = 0;
     g.edges = alloc(sizeof(Edge) * max_edges);
+    g.vertices = NULL;
 
     return g;
 }
@@ -17,7 +18,6 @@ int edge_exists(Graph *g, int u, int v) {
            (g->edges[i].u==v && g->edges[i].v==u))
             return 1;
     }
-
     return 0;
 }
 
@@ -36,10 +36,11 @@ void add_edge(Graph *g,int u,int v,double w){
 }
 
 void free_graph(Graph *g) {
-
     free(g->edges);
-    free(g->vertices); 
+
+    if(g->vertices != NULL) 
+        free(g->vertices);
 
     g->edges=NULL;
-    g->vertices=NULL; 
+    g->vertices=NULL;
 }
