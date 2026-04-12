@@ -40,8 +40,13 @@ size_t malloc_size(const void *ptr) {
 
 void push_back(Vector *vec, int x) {
 	//jeżeli powiększony wektor zajmuje więcej pamięci niż jest aktualnie zaalowakowanej, to korzystamy ze standardowej funkcji realloc
+<<<<<<< Updated upstream
 	if(sizeof(int) * vec->size >= malloc_size(vec->ptr)) {
 		int *p = realloc(vec->ptr, (vec->size+32) * sizeof(int)); //nowa allokacja może pomieść co najmniej o 32 liczby (128 bajtów) więcej
+=======
+	if(sizeof(vec_elem_t) * vec->size >= malloc_size(vec->ptr)) {
+		int *p = realloc(vec->ptr, (vec->size+32) * sizeof(vec_elem_t)); //nowa allokacja może pomieść co najmniej o 32 liczby (128 bajtów) więcej
+>>>>>>> Stashed changes
 		if(p == NULL) { //zgłaszamy błąd jeżeli nie można zaalokować pamięci
 			free(vec->ptr);
 			error_msg("Nie można zalokować pamięci");

@@ -23,8 +23,10 @@ void verror_msg(const char *restrict msg, ...) {
 	exit(EXIT_FAILURE);
 }
 
-void check_null(const void *const ptr) {
+void *alloc(size_t bytes) {
+	void *ptr = malloc(bytes);
 	if(ptr == NULL)
 		error_msg("Nie można zaalokować pamięci");
+	return ptr;
 }
 
