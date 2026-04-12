@@ -5,15 +5,10 @@
 
 size_t malloc_size(const void *ptr);
 
-<<<<<<< Updated upstream
-typedef struct Vector {
-	int *ptr;
-=======
-typedef vec_elem_t double;
+typedef double vec_elem_t;
 
 typedef struct Vector {
 	vec_elem_t *ptr;
->>>>>>> Stashed changes
 	size_t size;
 } Vector;
 
