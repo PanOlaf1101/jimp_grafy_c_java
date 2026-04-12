@@ -20,7 +20,7 @@ void cleanup(void) {
 int main(int argc, char *argv[]) {
 	setlocale(LC_CTYPE, "C.UTF-8");
 
-	read_config(argv, argc); //zamniast gv+1 i gc-1
+	read_config(argv+1, argc-1); 
 
     // testowy main-użycie triangulacji 
     Graph g = create_graph(1000);
