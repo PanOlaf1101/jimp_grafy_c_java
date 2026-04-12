@@ -1,6 +1,8 @@
 #ifndef _CONFIG_H__
 #define _CONFIG_H__
 
+#include <stdio.h>
+
 struct Config {
 	FILE *input_file, *output_file;
 	char algo;
@@ -8,8 +10,6 @@ struct Config {
 
 #define ALG_SL 1 //Spectral laytout
 #define ALG_TR 2 //Triangulation
-
-extern struct Config conf; // Deklaracja globalnej zmiennej
 
 void read_config(char *arg[], int n);
 
