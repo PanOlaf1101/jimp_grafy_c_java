@@ -7,10 +7,17 @@ typedef struct Edge {
     double w;
 } Edge;
 
+typedef struct Vertex { 
+    int id;
+    double x;
+    double y;
+} Vertex;
+
 typedef struct Graph {
     int n_vertices;
     int n_edges;
     Edge *edges;
+    Vertex *vertices;
 } Graph;
 
 Graph create_graph(int max_edges);
