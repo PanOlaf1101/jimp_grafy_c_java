@@ -3,9 +3,8 @@
 #include "utils.h"
 
 #include <stdlib.h>
+#define _USE_MATH_DEFINES 1
 #include <math.h>
-
-#define M_PI acos(-1.0)
 
 static double get_weight(Graph *g, int u, int v)
 {

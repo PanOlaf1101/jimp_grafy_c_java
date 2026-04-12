@@ -3,6 +3,8 @@
 #include <locale.h>
 #include "utils.h"
 #include "config.h"
+#include "graph.h"
+#include "triangulation.h"
 
 //All structures using dynamic memory allocation must be declared herein exclusively
 
