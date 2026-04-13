@@ -31,8 +31,8 @@ void add_edge(Graph *g,int u,int v,double w){
 
     g->n_edges++;
 
-    if(u>g->n_vertices) g->n_vertices=u;
-    if(v>g->n_vertices) g->n_vertices=v;
+    if (u + 1 > g->n_vertices) g->n_vertices = u + 1;
+    if (v + 1 > g->n_vertices) g->n_vertices = v + 1;
 }
 
 void free_graph(Graph *g) {
