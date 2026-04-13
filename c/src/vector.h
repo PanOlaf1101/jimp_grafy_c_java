@@ -16,4 +16,6 @@ Vector reserved_vec(size_t res);
 
 void push(Vector *vec, int x);
 
+void free_vec(Vector *vec);
+
 #endif //_VECTOR_H__

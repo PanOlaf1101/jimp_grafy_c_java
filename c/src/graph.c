@@ -37,9 +37,7 @@ void add_edge(Graph *g,int u,int v,double w){
 
 void free_graph(Graph *g) {
     free(g->edges);
-
-    if(g->vertices != NULL) 
-        free(g->vertices);
+	free(g->vertices);
 
     g->edges=NULL;
     g->vertices=NULL;

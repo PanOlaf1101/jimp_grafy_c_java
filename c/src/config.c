@@ -4,7 +4,7 @@
 #include "utils.h"
 #include <string.h>
 
-struct Config conf = {0};
+extern struct Config conf;
 
 void read_config(char *arg[], int n) {
 	for(int i = 0; i < n; ++i) {
