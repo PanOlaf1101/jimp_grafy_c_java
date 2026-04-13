@@ -242,10 +242,12 @@ Główny moduł \verb|main| zawiera główną funkcję programu odpowiedzialną 
 
 
 \section{Podsumowanie}
-Celem projektu było stworzenie aplikacji umożliwiającej wyznaczanie współrzędnych wierzchołków grafu planarnego na podstawie listy krawędzi zapisanej w pliku wejściowym. Program analizuje strukturę grafu i oblicza położenie wierzchołków w przestrzeni dwuwymiarowej.
 
-W projekcie zaimplementowano dwa algorytmy rozmieszczania grafów: triangulację oraz metodę Spectral Layout. Zastosowanie dwóch różnych metod pozwala na porównanie uzyskanych wyników oraz ocenę ich przydatności w wizualizacji grafów.
+Projekt przedstawia kompletną aplikację konsolową napisaną w języku C, służącą do analizy oraz wizualnego odwzorowania grafów planarnych poprzez wyznaczanie współrzędnych ich wierzchołków. Program umożliwia wczytywanie danych z pliku, przetwarzanie grafu przy użyciu wybranych algorytmów oraz zapis wyników w uporządkowanej formie.
 
-Opracowana aplikacja umożliwia wczytanie grafu, wybór algorytmu oraz zapisanie wyników w postaci współrzędnych wierzchołków do pliku wyjściowego.
+Zastosowany podział na moduły (takie jak \verb|config|, \verb|utils|, \verb|vector|, \verb|graph| oraz moduły algorytmiczne) pozwolił na uzyskanie przejrzystej i łatwej w utrzymaniu struktury programu. 
 
+Ważnym aspektem projektu jest również dbałość o bezpieczeństwo działania programu, w szczególności w zakresie zarządzania pamięcią oraz obsługi błędów. Wprowadzone mechanizmy zapewniają stabilność działania oraz czytelne informowanie użytkownika o problemach.
+
+Ostatecznie program spełnia założone wymagania funkcjonalne i stanowi solidną podstawę do dalszych prac nad bardziej zaawansowanymi narzędziami do analizy i wizualizacji grafów w Javie.
 \end{document}
