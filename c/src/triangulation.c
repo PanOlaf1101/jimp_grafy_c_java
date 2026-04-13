@@ -77,23 +77,23 @@ static int place_vertex_planar(Graph *g, int current_i, int idx_a, int idx_b, do
 void triangulate(Graph *g) { // ===Główna funkcja triangulacji: przypisuje współrzędne wszystkim wierzchołkom grafu.===
     int n = g->n_vertices;
     if(n == 0) return;
-    g->vertices = alloc((n + 1) * sizeof(Vertex));
-
-    g->vertices[1] = (Vertex){.id = 1, .x = 0.0, .y = 0.0}; // Pierwszy punkt ustawia w (0,0) - "kotwica"
+    g->vertices = alloc(n * sizeof(Vertex));
+	
+    g->vertices[0] = (Vertex){.id = 0, .x = 0.0, .y = 0.0};// Punkt 0: kotwica w (0,0)
     if(n == 1) return;
 
-    double w12 = get_weight(g, 1, 2); // Drugi punkt ustawia na osi X w odległości wynikającej z wagi krawędzi
-    if(w12 <= 0) w12 = 1.0;
-    g->vertices[2] = (Vertex){.id = 2, .x = w12, .y = 0.0};
+    double w01 = get_weight(g, 0, 1); // 1 punkt ustawia na osi X w odległości wynikającej z wagi krawędzi
+    if(w01 <= 0) w01 = 1.0;
+    g->vertices[1] = (Vertex){.id = 1, .x = w01, .y = 0.0};
     if(n == 2) return;
 
-    for(int i = 3; i <= n; i++) { // Pętla dla pozostałych wierzchołków
-        g->vertices[i].id = i;
+    for(int i = 2; i < n; i++) { // Pętla dla pozostałych wierzchołków
+    	g->vertices[i].id = i;
         int placed = 0;
         int one_neighbor = -1;
         double w_one = 0;
 
-        for(int j = 1; j < i; j++) { // Szuka dwóch sąsiadów, którzy są już narysowani, aby wykonać triangulację
+        for(int j = 0; j < i; j++) { // Szuka dwóch sąsiadów, którzy są już narysowani, aby wykonać triangulację
             double wj = get_weight(g, i, j);
             if(wj > 0) {
                 if(one_neighbor == -1) { one_neighbor = j; w_one = wj; }
