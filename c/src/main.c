@@ -29,18 +29,19 @@ int main(int argc, char *argv[]) {
     int u, v; 
     double w; //etukiety , wieszchołkiy i waga-odległość
 
-    while (fscanf(conf.input_file, "%s %d %d %lf", //czyta format
+    while (fscanf(conf.input_file, "%s %d %d %lf",//czyta format
                   name, &u, &v, &w) == 4)
     {
-        add_edge(&g, u, v, w); 
+        add_edge(&g, u - 1, v - 1, w); 
     }
 
-    triangulate(&g); //z triangulation.c
+    triangulate(&g);
 
-    for (int i = 1; i <= g.n_vertices; i++)   //output
+    for (int i = 0; i < g.n_vertices; i++) //output
     {
+      
         fprintf(conf.output_file, "%d %.6f %.6f\n",
-                g.vertices[i].id,
+                g.vertices[i].id + 1, 
                 g.vertices[i].x,
                 g.vertices[i].y);
     }
