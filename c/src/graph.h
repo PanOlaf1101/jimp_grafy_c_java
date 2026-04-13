@@ -7,7 +7,7 @@ typedef struct Edge {
     double w;
 } Edge;
 
-typedef struct Vertex { 
+typedef struct Vertex {
     int id;
     double x;
     double y;

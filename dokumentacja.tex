@@ -11,7 +11,7 @@
 
 \title{Dokumentacja programu do analizy grafów}
 \author{Olaf Mianowski \\ Julia Rombel}
-\date{2026-03-17}
+\date{2026-04-13}
 
 \begin{document}
 
@@ -178,11 +178,104 @@ Funkcja \verb|error_msg()| przyjmuje tylko jeden argument: ciąg znaków będąc
 \item Nepoprawna nazwa algorytmu: \textbf{\textcolor{red}{Błąd: Podano niepoprawny kod algorytmu: "<kod algorytmu"> Wpisz "t" lub "s"!}}
 \end{itemize}
 
+\section{Implementacja Programu}
+
+Program został zaimplementowany jako aplikacja konsolowa służąca do analizy oraz zapisu grafów planarnych. Program uruchamiany jest z poziomu wiersza poleceń i przyjmuje parametry określające plik wjściowy, plik wyjściowy oraz wybrany algorytm rozmieszczenia wierzchołków.
+Dane wejściowe przekazywane są w postaci pliku tekstowego zawierającego listę krawędzi grafu. Każdy wiersz opisuje jedną krawędź poprzez nazwę, numery dwóch wierzchołków oraz wagę krawędzi. Wynikiem działania programu jest plik zawierający współrzędne wierzchołków w przestrzeni dwuwymiarowej.
+Architektura programu została podzielona na moduły odpowiedzialne za konfigurację, reprezentację grafu, implementację algorytmów oraz obsługę wejścia i wyjścia.
+
+\subsection{Moduł config}
+
+Moduł \verb|config|odpowiada za przetwarzanie argumentów wiersza poleceń oraz konfigurację działania programu. W module tym zdefiniowana została struktura przechowująca informacje o pliku wejściowym, pliku wyjściowym oraz wybranym algorytmie.
+
+Głównym zadaniem modułu jest interpretacja parametrów przekazanych przy uruchomieniu programu oraz ustawienie odpowiednich wartości konfiguracyjnych wykorzystywanych przez pozostałe części aplikacji.
+
+\subsection{Moduł utils}
+
+Moduł \verb|utils| zawiera zestaw funkcji pomocniczych wykorzystywanych w wielu częściach programu. Jego głównym zadaniem jest obsługa sytuacji błędnych oraz zapewnienie bezpiecznej alokacji pamięci. Dzięki wydzieleniu tych funkcji do osobnego modułu możliwe jest uproszczenie kodu pozostałych części programu oraz ujednolicenie sposobu reagowania na błędy.
+
+Najważniejszą funkcją modułu jest \verb|error\_msg()|, która odpowiada za obsługę podstawowych błędów programu. Funkcja ta wyświetla komunikat 
+o błędzie na standardowym wyjściu błędów (\verb|stderr|), następnie wywołuje funkcję \verb|cleanup()| w celu zwolnienia zaalokowanej pamięci oraz zamknięcia otwartych plików, a na końcu kończy działanie programu przy pomocy funkcji \verb|exit()|. Funkcja ta wykorzystywana jest między innymi w przypadku braku wymaganych argumentów programu lub wykrycia niepoprawnych danych wejściowych.
+
+Drugą ważną funkcją obsługi błędów jest \verb|verror\_msg()|, która działa podobnie jak \\ \verb|error\_msg()|, jednak umożliwia tworzenie komunikatów błędów z użyciem formatowania podobnego do funkcji \verb|printf()|. Dzięki temu możliwe jest przekazanie dodatkowych informacji w komunikacie błędu, takich jak nazwa pliku lub niepoprawna wartość argumentu. Funkcja ta wykorzystywana jest między innymi w sytuacjach, gdy nie można otworzyć pliku wejściowego lub wyjściowego.
+
+Moduł zawiera również funkcję \verb|alloc()|, która odpowiada za bezpieczną alokację pamięci. Funkcja ta stanowi opakowanie dla standardowej funkcji \verb|malloc()|. Po przydzieleniu pamięci sprawdzane jest, czy zwrócony wskaźnik nie jest równy \verb|NULL|. W przypadku niepowodzenia funkcja zgłasza błąd przy pomocy \verb|error\_msg()|. Dzięki temu cały program jest zabezpieczony przed sytuacją, w której system operacyjny nie może przydzielić wymaganej ilości pamięci.
+
+\subsection{Moduł vector}
+
+Moduł \verb|vector| odpowiada za operacjię na dynamicznym wektorze przechowującym elementy typu \verb|vec_elem_t|. Kluczowym elementem rozwiązania jest ręczne zarządzanie pamięcią na stercie z wykorzystaniem funkcji \verb|malloc|, \verb|realloc| oraz \verb|free|.
+
+W celu kontrolowania aktualnie zaalokowanego rozmiaru pamięci zastosowano funkcję pomocniczą \verb|malloc_size()|, której implementacja jest zależna od systemu operacyjnego. Dla systemów takich jak \verb|Windows|, \verb|Linux|, \verb|macOS| oraz \verb|FreeBSD| używane są odpowiednie funkcje systemowe (np. \verb|_msize|, \verb|malloc_usable_size|). Pozwala to określić rzeczywistą ilość pamięci przydzielonej dla wskaźnika, co nie jest możliwe w standardowym C.
+
+Funkcja \verb|push_back| odpowiada za dodanie nowego elementu na koniec wektora. Przed operacją sprawdzane jest, czy dostępna pamięć jest wystarczająca $$(\verb|sizeof(vec_elem_t) * vec->size >= malloc_size(vec->ptr)|).$$ 
+Jeśli nie, następuje realokacja bufora przy użyciu \verb|realloc| z zapasem miejsca: $$(\verb|(vec->size+32) * sizeof(vec_elem_t)|)$$ co ogranicza częstotliwość  operacji alokacji. W przypadku błędu (\verb|p == NULL|) pamięć zostaje zwolniona przez \verb|free|, a program zgłasza błąd.
+
+Funkcja \verb|free_vec| odpowiada za zwolnienie pamięci zajmowanej przez wektor\\ (\verb|free(vec->ptr)|) oraz wyzerowanie jego pól (\verb|vec->ptr = NULL|, \verb|vec->size = 0|), co zapobiega użyciu nieprawidłowych wskaźników.
+
+\subsection{Moduł graf}
+
+Moduł \verb|graph| odpowiada za reprezentację grafu w pamięci oraz operacje na jego strukturze. Graf przechowywany jest w postaci listy krawędzi, gdzie każda krawędź reprezentowana jest przez strukturę \verb|Edge| zawierającą numery wierzchołków oraz wagę krawędzi.
+
+Struktura \verb|graph| przechowuje liczbę wierzchołków, liczbę krawędzi oraz dynamiczną tablicę krawędzi. Dodatkowo zawiera również tablicę wierzchołków, w której przechowywane są obliczone współrzędne punktów na płaszczyźnie.
+
+Moduł udostępnia funkcje umożliwiające tworzenie grafu, dodawanie nowych krawędzi, sprawdzanie istnienia krawędzi oraz zwalnianie pamięci zajmowanej przez strukturę grafu.
+
+\subsection{Moduł triangulation}
+
+Funkcja \verb|triangulate()| odpowiada za wyznaczenie współrzędnych wierzchołków grafu na płaszczyźnie dwuwymiarowej. Jej zadaniem jest przygotowanie takiego rozmieszczenia wierzchołków, aby możliwa była czytelna wizualizacja struktury grafu. Funkcja przyjmuje jako argument wskaźnik do struktury \verb|Graph|, która zawiera informacje o liczbie wierzchołków oraz listę krawędzi grafu.
+
+Na początku działania funkcji przydzielana jest pamięć dla tablicy wierzchołków, w której przechowywane będą współrzędne każdego z nich. Do tego celu wykorzystywana jest funkcja \verb|alloc()|, która zapewnia bezpieczną alokację pamięci. Następnie dla każdego wierzchołka obliczane są współrzędne na płaszczyźnie kartezjańskiej.
+
+W aktualnej implementacji wierzchołki rozmieszczane są równomiernie na okręgu o ustalonym promieniu. Pozycja każdego wierzchołka wyznaczana jest na podstawie jego indeksu oraz całkowitej liczby wierzchołków w grafie. Do obliczenia współrzędnych wykorzystywane są funkcje trygonometryczne \verb|cos()| oraz \verb|sin()| z biblioteki \verb|<math.h>|. Dzięki temu możliwe jest równomierne rozmieszczenie wszystkich wierzchołków wokół środka układu współrzędnych.
+
+Obliczone wartości współrzędnych zapisywane są w strukturze wierzchołka należącej do tablicy \verb|vertices| w strukturze grafu. Po zakończeniu działania funkcji dane te są wykorzystywane przez program główny do wygenerowania pliku wyjściowego zawierającego listę wierzchołków wraz z ich współrzędnymi.
+
+\subsection{Moduł spectral}
+
+% Funkcja \verb|spectral()| przyjmuje jako parametr graf i przypisuje wierzchołkom współrzedne zgodnie z wektorami własnymi utworzonymi na podstawie macierzy Laplace'a. Wartości własne oblicza rekurencyjna funkcja \verb|get_eigenvals()|, która operuje na dwóch stosach macierzy. Pierwszy stos zawiera macierz Laplace'a i jego minory, zaś drugi macierze jednostkowe i ich minory.
+
+Funkcja \verb|spectral()| przyjmuje jako parametr graf i przypisuje wierzchołkom współrzedne zgodnie z wektorami własnymi utworzonymi na podstawie macierzy Laplace'a. Wykorzystuje ona algorytm QR, który jest algorytmem szacunkowym i iteracyjnym (tzn. im więcej iteracji, tym dokładniejszy wynik).
+
+Macierz $A_k$ po $k$-tej iteracji można obliczyć wzorem:
+\[A_k = Q_k R_k = Q_k^T A_k Q_k\]
+
+\noindent gdzie:
+\begin{itemize}
+	\item $Q_k$ - macierz ortagonalna
+	\item $R_k$ - macierz górnotrójkątna
+\end{itemize}
+
+\noindent By wyznaczyć macierze $Q$ oraz $R$, przyjmijmy, że $a_i$ jest wektorem oraz $i$-tą kolumną macierzy A. następnie definiujemy sekwencje wektorów $u_{1 \dots k}$, gdzie:
+\[u_k = a_k - \sum_{i=1}^{k-1}{\frac{\langle u_i,a_k \rangle}{\langle u_i, u_i \rangle} u_i a_k}\]
+
+\noindent Macierz $Q$ będzie wtedy miała postać:
+\[Q = [\frac{u_1}{||u_1||}, \frac{u_2}{||u_2||}, \dots, \frac{u_n}{||u_n||}]\]
+
+\noindent Zaś macierz $R$:
+\[R = \begin{bmatrix}
+	\langle \frac{u_1}{||u_1||}, a_1 \rangle & \langle \frac{u_1}{||u_1||}, a_2 \rangle & \dots & \langle \frac{u_1}{||u_1||}, a_n \rangle \\
+	0 & \langle \frac{u_2}{||u_2||}, a_2 \rangle & \dots & \langle \frac{u_2}{||u_2||}, a_n \rangle \\
+	\vdots & \vdots & \ddots & \vdots \\
+	0 & 0 & 0 & \langle \frac{u_n}{||u_n||}, a_n \rangle
+\end{bmatrix}\]
+
+\subsection{Moduł matrix}
+Zawiera strukturę macierzy (\verb|struct Matrix|) oraz funkcje do jej inicjalizacji.
+
+\subsection{Moduł main}
+
+Główny moduł \verb|main| zawiera główną funkcję programu odpowiedzialną za koordynowanie działania wszystkich pozostałych modułów. Funkcja ta wczytuje argumenty programu, inicjalizuje strukturę grafu oraz odczytuje dane z pliku wejściowego. Po zbudowaniu struktury grafu wywoływany jest wybrany algorytm rozmieszczania wierzchołków, a następnie wyniki zapisywane są do wybranego pliku wyjściowego.
+
+\section{Testy}
+
+
 \section{Podsumowanie}
-Celem projektu było stworzenie aplikacji umożliwiającej wyznaczanie współrzędnych wierzchołków grafu planarnego na podstawie listy krawędzi zapisanej w pliku wejściowym. Program analizuje strukturę grafu i oblicza położenie wierzchołków w przestrzeni dwuwymiarowej.
 
-W projekcie zaimplementowano dwa algorytmy rozmieszczania grafów: triangulację oraz metodę Spectral Layout. Zastosowanie dwóch różnych metod pozwala na porównanie uzyskanych wyników oraz ocenę ich przydatności w wizualizacji grafów.
+Projekt przedstawia kompletną aplikację konsolową napisaną w języku C, służącą do analizy oraz wizualnego odwzorowania grafów planarnych poprzez wyznaczanie współrzędnych ich wierzchołków. Program umożliwia wczytywanie danych z pliku, przetwarzanie grafu przy użyciu wybranych algorytmów oraz zapis wyników w uporządkowanej formie.
 
-Opracowana aplikacja umożliwia wczytanie grafu, wybór algorytmu oraz zapisanie wyników w postaci współrzędnych wierzchołków do pliku wyjściowego.
+Zastosowany podział na moduły (takie jak \verb|config|, \verb|utils|, \verb|vector|, \verb|graph| oraz moduły algorytmiczne) pozwolił na uzyskanie przejrzystej i łatwej w utrzymaniu struktury programu.
 
+Ważnym aspektem projektu jest również dbałość o bezpieczeństwo działania programu, w szczególności w zakresie zarządzania pamięcią oraz obsługi błędów. Wprowadzone mechanizmy zapewniają stabilność działania oraz czytelne informowanie użytkownika o problemach.
+
+Ostatecznie program spełnia założone wymagania funkcjonalne i stanowi solidną podstawę do dalszych prac nad bardziej zaawansowanymi narzędziami do analizy i wizualizacji grafów w Javie.
 \end{document}
