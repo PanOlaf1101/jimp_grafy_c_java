@@ -194,10 +194,10 @@ Głównym zadaniem modułu jest interpretacja parametrów przekazanych przy uruc
 
 Moduł \verb|utils| zawiera zestaw funkcji pomocniczych wykorzystywanych w wielu częściach programu. Jego głównym zadaniem jest obsługa sytuacji błędnych oraz zapewnienie bezpiecznej alokacji pamięci. Dzięki wydzieleniu tych funkcji do osobnego modułu możliwe jest uproszczenie kodu pozostałych części programu oraz ujednolicenie sposobu reagowania na błędy.
 
-Najważniejszą funkcją modułu jest \verb|error\_msg()| i  \verb|verror\_msg()|, które odpowiadają za obsługę podstawowych błędów programu. Funkcja ta wyświetla komunikat 
+Najważniejszą funkcją modułu jest \verb|error\_msg()|, która odpowiada za obsługę podstawowych błędów programu. Funkcja ta wyświetla komunikat 
 o błędzie na standardowym wyjściu błędów (\verb|stderr|), następnie wywołuje funkcję \verb|cleanup()| w celu zwolnienia zaalokowanej pamięci oraz zamknięcia otwartych plików, a na końcu kończy działanie programu przy pomocy funkcji \verb|exit()|. Funkcja ta wykorzystywana jest między innymi w przypadku braku wymaganych argumentów programu lub wykrycia niepoprawnych danych wejściowych.
 
-Drugą funkcją obsługi błędów jest \verb|verror\_msg()|, która działa podobnie jak \\ \verb|error\_msg()|, jednak umożliwia tworzenie komunikatów błędów z użyciem formatowania podobnego do funkcji \verb|printf()|. Dzięki temu możliwe jest przekazanie dodatkowych informacji w komunikacie błędu, takich jak nazwa pliku lub niepoprawna wartość argumentu. Funkcja ta wykorzystywana jest między innymi w sytuacjach, gdy nie można otworzyć pliku wejściowego lub wyjściowego.
+Drugą ważną funkcją obsługi błędów jest \verb|verror\_msg()|, która działa podobnie jak \\ \verb|error\_msg()|, jednak umożliwia tworzenie komunikatów błędów z użyciem formatowania podobnego do funkcji \verb|printf()|. Dzięki temu możliwe jest przekazanie dodatkowych informacji w komunikacie błędu, takich jak nazwa pliku lub niepoprawna wartość argumentu. Funkcja ta wykorzystywana jest między innymi w sytuacjach, gdy nie można otworzyć pliku wejściowego lub wyjściowego.
 
 Moduł zawiera również funkcję \verb|alloc()|, która odpowiada za bezpieczną alokację pamięci. Funkcja ta stanowi opakowanie dla standardowej funkcji \verb|malloc()|. Po przydzieleniu pamięci sprawdzane jest, czy zwrócony wskaźnik nie jest równy \verb|NULL|. W przypadku niepowodzenia funkcja zgłasza błąd przy pomocy \verb|error\_msg()|. Dzięki temu cały program jest zabezpieczony przed sytuacją, w której system operacyjny nie może przydzielić wymaganej ilości pamięci.
 
