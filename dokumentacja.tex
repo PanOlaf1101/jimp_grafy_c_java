@@ -268,6 +268,107 @@ Główny moduł \verb|main| zawiera główną funkcję programu odpowiedzialną 
 
 \section{Testy}
 
+W celu sprawdzenia poprawności działania programu przygotowano dwa
+przykładowe pliki wejściowe. Testy obejmują działanie algorytmu
+triangulacji oraz algorytmu spectral, a także zapis wyników
+w formacie tekstowym i binarnym.
+
+\subsection{Test 1 -- plik \texttt{test.txt}}
+
+Zawartość pliku wejściowego:
+
+\begin{verbatim}
+ab 1 2 1
+bc 2 3 1.414
+ac 1 3 1
+cd 3 4 1
+\end{verbatim}
+
+Dane z pliku w formie tabeli:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Krawędź & Wierzchołek 1 & Wierzchołek 2 & Waga \\
+\hline
+ab & 1 & 2 & 1 \\
+bc & 2 & 3 & 1.414 \\
+ac & 1 & 3 & 1 \\
+cd & 3 & 4 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+Uruchomienie programu:
+
+\begin{verbatim}
+graf -i test.txt -o wynik.txt -a triangular
+\end{verbatim}
+
+Program generuje plik wynikowy \verb|wynik.txt| o następującej zawartości:
+
+\begin{verbatim}
+1 0.00 0.00
+2 1.00 0.00
+3 0.00 1.00
+4 1.00 1.00
+\end{verbatim}
+
+Dane z pliku wynikowego można przedstawić w tabeli:
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Wierzchołek & X & Y \\
+\hline
+1 & 0.00 & 0.00 \\
+2 & 1.00 & 0.00 \\
+3 & 0.00 & 1.00 \\
+4 & 1.00 & 1.00 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Test 2 -- plik \texttt|tu.txt|}
+
+Zawartość pliku wejściowego:
+
+\begin{verbatim}
+ab 1 2 3
+bc 2 3 4
+ac 1 3 5
+cd 3 4 3
+de 4 5 4
+ce 3 5 5
+\end{verbatim}
+
+Dane z pliku w formie tabeli:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Krawędź & Wierzchołek 1 & Wierzchołek 2 & Waga \\
+\hline
+ab & 1 & 2 & 3 \\
+bc & 2 & 3 & 4 \\
+ac & 1 & 3 & 5 \\
+cd & 3 & 4 & 3 \\
+de & 4 & 5 & 4 \\
+ce & 3 & 5 & 5 \\
+\hline
+\end{tabular}
+\end{center}
+
+Uruchomienie programu:
+
+\begin{verbatim}
+graf -i tu.txt -o wynik.bin -a spectral -b
+\end{verbatim}
+
+W tym przypadku wynik zapisywany jest w pliku binarnym \verb|wynik.bin|.
+Plik zawiera współrzędne wierzchołków grafu wyznaczone przez algorytm
+spectral. Dane zapisane są w formacie binarnym jako kolejne wartości:
+numer wierzchołka, współrzędna X oraz współrzędna Y.
 
 \section{Podsumowanie}
 
