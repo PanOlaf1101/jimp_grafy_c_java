@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define M_PI acos(-1.0)
-
 static double ccw(double ax, double ay, double bx, double by, double cx, double cy) { // Pomocnicza funkcja do sprawdzania orientacji punktów (iloczyn wektorowy)
     return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
 }
