@@ -7,16 +7,23 @@
 extern struct Config conf;
 
 void read_config(char *arg[], int n) {
+
 	for(int i = 0; i < n; ++i) {
+		char *in_form = "r", *out_form = "w", c = arg[i][1];
 		if(arg[i][0] == '-') {
-			switch(arg[i][1]) {
+			if(c == 'b') {
+				in_form = "rb";
+				out_form = "wb";
+				c = arg[i][2];
+			}
+			switch(c) {
 			case 'i':
 				if(++i >= n)
 					error_msg("Nie podano nazwy pliku wejściowego");
 				if(conf.input_file != NULL)
 					error_msg("Plik wejściowy został już podany");
 
-				conf.input_file = fopen(arg[i], "r");
+				conf.input_file = fopen(arg[i], in_form);
 				if(conf.input_file == NULL)
 					verror_msg("Nie można otworzyć pliku wejściowego \"%s\"", arg[i]);
 				break;
@@ -26,7 +33,7 @@ void read_config(char *arg[], int n) {
 				if(conf.output_file != NULL)
 					error_msg("Plik wyjśćiowy został już podany");
 
-				conf.output_file = fopen(arg[i], "w");
+				conf.output_file = fopen(arg[i], out_form);
 				if(conf.output_file == NULL)
 					verror_msg("Nie można otworzyć pliku wyjściowego \"%s\"", arg[i]);
 				break;

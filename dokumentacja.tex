@@ -48,11 +48,11 @@ Program umożliwia:
 \verb|./graf -i <plik wejściowy> -o <plik wyjściowy> -a <algorytm>|
 
 \begin{center}
-\begin{tabular}{ |p{1cm}|p{0.18\linewidth}|p{0.68\linewidth}| }
+\begin{tabular}{ |p{1.2cm}|p{0.18\linewidth}|p{0.68\linewidth}| }
 \hline
--i & dane wejściowe & nazwa pliku z danymi wejściowymi. Jeśli nie został podany, to domyślnie będzie to \texttt{stdin} \\
+-i [-bi] & dane wejściowe & nazwa pliku z danymi wejściowymi. Jeśli nie został podany, to domyślnie będzie to \texttt{stdin} \\
 \hline
--o & dane wyjściowe & nazwa pliku do którego ma zostać zapisany wynik działania programu. Jeśli nie podano, to domyślnym wyjściem będzie \texttt{stdout} \\
+-o [-bo] & dane wyjściowe & nazwa pliku do którego ma zostać zapisany wynik wykonania programu. Jeśli nie podano, to wyjściem będzie \texttt{stdout} \\
 \hline
 -a & wybór algorytmu & litera oznaczająca, który algorytm ma być użyty przy wyznaczaniu położenia wierchołków:
 \begin{itemize}
@@ -62,6 +62,9 @@ Program umożliwia:
 \hline
 \end{tabular}
 \end{center}
+
+Flagi \verb*|-bi| oraz \verb*|-bo| oznaczają pliki w formacie binarnym, a nie tekstowym.
+
 %\noindent gdzie \verb|<plik wejściowy>| oraz \verb|<plik wyjściowy>| to nazwy plików z które zostaną wykorzystane do uzyskania danych oraz wypisaniu położenia węzłów grafu. Jeśli nie podano nazw tych plików, to domyślnie zostanie użyte standardowe wejście i wyjście (\verb|stdin| i \verb|stdout|).
 
 \subsection{Plik wejściowy}
@@ -203,11 +206,11 @@ Moduł zawiera również funkcję \verb|alloc()|, która odpowiada za bezpieczn�
 
 \subsection{Moduł vector}
 
-Moduł \verb|vector| odpowiada za operacjię na dynamicznym wektorze przechowującym elementy typu \verb|vec_elem_t|. Kluczowym elementem rozwiązania jest ręczne zarządzanie pamięcią na stercie z wykorzystaniem funkcji \verb|malloc|, \verb|realloc| oraz \verb|free|.
+Moduł \verb|vector| odpowiada za operację na dynamicznym wektorze przechowującym elementy typu \verb|double|. Kluczowym elementem rozwiązania jest ręczne zarządzanie pamięcią na stercie z wykorzystaniem funkcji \verb|malloc|, \verb|realloc| oraz \verb|free|.
 
-W celu kontrolowania aktualnie zaalokowanego rozmiaru pamięci zastosowano funkcję pomocniczą \verb|malloc_size()|, której implementacja jest zależna od systemu operacyjnego. Dla systemów takich jak \verb|Windows|, \verb|Linux|, \verb|macOS| oraz \verb|FreeBSD| używane są odpowiednie funkcje systemowe (np. \verb|_msize|, \verb|malloc_usable_size|). Pozwala to określić rzeczywistą ilość pamięci przydzielonej dla wskaźnika, co nie jest możliwe w standardowym C.
+Aby sprawdzić rozmiar zaalokowanego obszaru pamięci zastosowano funkcję pomocniczą \verb|malloc_size()|, której implementacja jest zależna od systemu operacyjnego. Dla systemów takich jak Windows, Linux, macOS oraz FreeBSD używane są odpowiednie funkcje systemowe (np. \verb|_msize|, \verb|malloc_usable_size|). Pozwala to określić rzeczywistą ilość pamięci przydzielonej dla wskaźnika, co nie jest możliwe w standardowym C.
 
-Funkcja \verb|push_back| odpowiada za dodanie nowego elementu na koniec wektora. Przed operacją sprawdzane jest, czy dostępna pamięć jest wystarczająca $$(\verb|sizeof(vec_elem_t) * vec->size >= malloc_size(vec->ptr)|).$$ 
+Funkcja \verb|push_back| odpowiada za dodanie nowego elementu na koniec wektora. Przed operacją sprawdzane jest, czy dostępna pamięć jest wystarczająca $$(\verb|sizeof(vec_elem_t) * vec->size >= malloc_size(vec->ptr)|).$$
 Jeśli nie, następuje realokacja bufora przy użyciu \verb|realloc| z zapasem miejsca: $$(\verb|(vec->size+32) * sizeof(vec_elem_t)|)$$ co ogranicza częstotliwość  operacji alokacji. W przypadku błędu (\verb|p == NULL|) pamięć zostaje zwolniona przez \verb|free|, a program zgłasza błąd.
 
 Funkcja \verb|free_vec| odpowiada za zwolnienie pamięci zajmowanej przez wektor\\ (\verb|free(vec->ptr)|) oraz wyzerowanie jego pól (\verb|vec->ptr = NULL|, \verb|vec->size = 0|), co zapobiega użyciu nieprawidłowych wskaźników.
@@ -234,7 +237,7 @@ Obliczone wartości współrzędnych zapisywane są w strukturze wierzchołka na
 
 % Funkcja \verb|spectral()| przyjmuje jako parametr graf i przypisuje wierzchołkom współrzedne zgodnie z wektorami własnymi utworzonymi na podstawie macierzy Laplace'a. Wartości własne oblicza rekurencyjna funkcja \verb|get_eigenvals()|, która operuje na dwóch stosach macierzy. Pierwszy stos zawiera macierz Laplace'a i jego minory, zaś drugi macierze jednostkowe i ich minory.
 
-Funkcja \verb|spectral()| przyjmuje jako parametr graf i przypisuje wierzchołkom współrzedne zgodnie z wektorami własnymi utworzonymi na podstawie macierzy Laplace'a. Wykorzystuje ona algorytm QR, który jest algorytmem szacunkowym i iteracyjnym (tzn. im więcej iteracji, tym dokładniejszy wynik).
+Funkcja \verb|spectral()| przyjmuje jako parametr graf i przypisuje wierzchołkom współrzedne zgodnie z wektorami własnymi utworzonymi na podstawie macierzy Laplace'a. Wykorzystuje ona algorytm QR, który jest algorytmem szacunkowym i iteracyjnym (tzn. im więcej iteracji, tym dokładniejszy wynik. W tym programie to 30 powtórzeń).
 
 Macierz $A_k$ po $k$-tej iteracji można obliczyć wzorem:
 \[A_k = Q_k R_k = Q_k^T A_k Q_k\]
@@ -245,8 +248,8 @@ Macierz $A_k$ po $k$-tej iteracji można obliczyć wzorem:
 	\item $R_k$ - macierz górnotrójkątna
 \end{itemize}
 
-\noindent By wyznaczyć macierze $Q$ oraz $R$, przyjmijmy, że $a_i$ jest wektorem oraz $i$-tą kolumną macierzy A. następnie definiujemy sekwencje wektorów $u_{1 \dots k}$, gdzie:
-\[u_k = a_k - \sum_{i=1}^{k-1}{\frac{\langle u_i,a_k \rangle}{\langle u_i, u_i \rangle} u_i a_k}\]
+\noindent By wyznaczyć macierze $Q$ oraz $R$, przyjmijmy, że $a_i$ jest wektorem oraz $i$-tą kolumną macierzy A. następnie definiujemy sekwencje wektorów $u_1, u_2, \dots, u_n$, gdzie:
+\[u_k = a_k - \sum_{i=1}^{k-1}{\frac{\langle u_i,a_k \rangle}{\langle u_i, u_i \rangle} u_i} \quad k \in \{1, 2, \dots, n\}\]
 
 \noindent Macierz $Q$ będzie wtedy miała postać:
 \[Q = [\frac{u_1}{||u_1||}, \frac{u_2}{||u_2||}, \dots, \frac{u_n}{||u_n||}]\]
@@ -259,12 +262,14 @@ Macierz $A_k$ po $k$-tej iteracji można obliczyć wzorem:
 	0 & 0 & 0 & \langle \frac{u_n}{||u_n||}, a_n \rangle
 \end{bmatrix}\]
 
+Algorytm Spectral Layout wymaga dużej mocy obliczeniowej, jego złożoność czasowa to $O(N^3)$.
+
 \subsection{Moduł matrix}
-Zawiera strukturę macierzy (\verb|struct Matrix|) oraz funkcje do jej inicjalizacji.
+Zawiera funkcje do alokacji, dealokacji oraz mnożenia macierzy (w postaci tablicy dwuwymiarowej typu \verb|double|).
 
 \subsection{Moduł main}
 
-Główny moduł \verb|main| zawiera główną funkcję programu odpowiedzialną za koordynowanie działania wszystkich pozostałych modułów. Funkcja ta wczytuje argumenty programu, inicjalizuje strukturę grafu oraz odczytuje dane z pliku wejściowego. Po zbudowaniu struktury grafu wywoływany jest wybrany algorytm rozmieszczania wierzchołków, a następnie wyniki zapisywane są do wybranego pliku wyjściowego.
+Główny moduł \verb|main| zawiera główną funkcję programu odpowiedzialną za koordynowanie działania pozostałych modułów. Funkcja ta wczytuje argumenty programu, inicjalizuje strukturę grafu oraz odczytuje dane z pliku wejściowego. Po zbudowaniu struktury grafu wywoływany jest wybrany algorytm rozmieszczania wierzchołków, a następnie wyniki zapisywane są do wybranego pliku wyjściowego.
 
 \section{Testy}
 
@@ -287,7 +292,7 @@ cd 3 4 1
 Uruchomienie programu:
 
 \begin{verbatim}
-graf -i test.txt -o wynik.txt -a triangular
+graf -i test.txt -o wynik.txt -a t
 \end{verbatim}
 
 Program generuje plik wynikowy \verb|wynik.txt| o następującej zawartości:
@@ -312,11 +317,10 @@ de 4 5 4
 ce 3 5 5
 \end{verbatim}
 
-
 Uruchomienie programu:
 
 \begin{verbatim}
-graf -i in.txt -o wynik.bin -a spectral -b
+graf -i in.txt -bo wynik.bin -a s
 \end{verbatim}
 
 W tym przypadku wynik zapisywany jest w pliku binarnym \verb|wynik.bin|.

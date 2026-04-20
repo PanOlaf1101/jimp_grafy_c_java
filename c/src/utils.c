@@ -26,7 +26,13 @@ void verror_msg(const char *restrict msg, ...) {
 void *alloc(size_t bytes) {
 	void *ptr = malloc(bytes);
 	if(ptr == NULL)
-		error_msg("Nie można zaalokować pamięci");
+		error_msg("Nie można zaalokować pamięci (alloc())");
 	return ptr;
 }
 
+void *zalloc(size_t n, size_t s) {
+	void *ptr = calloc(n, s);
+	if(ptr == NULL)
+		error_msg("Nie można zaalokować pamięci (zalloc())");
+	return ptr;
+}

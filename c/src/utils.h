@@ -13,6 +13,10 @@ void verror_msg(const char *restrict msg, ...);
 
 void check_null(const void *const ptr);
 
+//"bezpieczne" malloc(), jeśli nie można zaalokować pamięci, wywołuje error_msg()
 void *alloc(size_t bytes);
+
+//to samo co alloc(), ale wykorzystuje calloc() zamiast malloc()
+void *zalloc(size_t n, size_t s);
 
 #endif //_UTILS_H__

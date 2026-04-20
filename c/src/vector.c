@@ -38,6 +38,13 @@ size_t malloc_size(const void *ptr) {
 #error "Unsupported OS! Use a Windows, Mac, Linux, or FreeBSD machine!"
 #endif
 
+Vector reserved_vec(size_t s) {
+	Vector v;
+	v.ptr = alloc(sizeof(vec_elem_t)*s);
+	v.size = 0;
+	return v;
+}
+
 void push_back(Vector *vec, int x) {
 	//jeżeli powiększony wektor zajmuje więcej pamięci niż jest aktualnie zaalowakowanej, to korzystamy ze standardowej funkcji realloc
 	if(sizeof(vec_elem_t) * vec->size >= malloc_size(vec->ptr)) {

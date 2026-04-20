@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <math.h>
 
+#ifndef M_PI
+#define M_PI acos(-1.0)
+#endif
+
 static double ccw(double ax, double ay, double bx, double by, double cx, double cy) { // Pomocnicza funkcja do sprawdzania orientacji punktów (iloczyn wektorowy)
     return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
 }
@@ -24,11 +28,11 @@ static int count_intersections(Graph *g, int new_idx, Vertex v, int neighbor_j, 
     for (int i = 0; i < g->n_edges; i++) {     // Sprawdzamy nową krawędź (v, j) oraz (v, k) przeciwko wszystkim istniejącym krawędziom
         int u = g->edges[i].u;
         int w = g->edges[i].v;
-       
+
         if (u < new_idx && w < new_idx) {  // Interesuje program tylko krawędzie, w których oba końce są już narysowane (id < new_idx)
             Vertex *pU = &g->vertices[u];
             Vertex *pW = &g->vertices[w];
-            
+
             if (u != neighbor_j && w != neighbor_j) // Sprawdź krawędź do sąsiada J
                 intersections += segments_intersect(v.x, v.y, g->vertices[neighbor_j].x, g->vertices[neighbor_j].y, pU->x, pU->y, pW->x, pW->y);
 
@@ -42,7 +46,7 @@ static int count_intersections(Graph *g, int new_idx, Vertex v, int neighbor_j, 
 static double get_weight(Graph *g, int u, int v) {
     for(int i = 0; i < g->n_edges; i++) {
         if((g->edges[i].u == u && g->edges[i].v == v) || (g->edges[i].u == v && g->edges[i].v == u))
-            return g->edges[i].w; 
+            return g->edges[i].w;
     }
     return -1.0;
 }
@@ -76,7 +80,7 @@ void triangulate(Graph *g) { // ===Główna funkcja triangulacji: przypisuje wsp
     int n = g->n_vertices;
     if(n == 0) return;
     g->vertices = alloc(n * sizeof(Vertex));
-	
+
     g->vertices[0] = (Vertex){.id = 0, .x = 0.0, .y = 0.0};// Punkt 0: kotwica w (0,0)
     if(n == 1) return;
 
@@ -111,7 +115,7 @@ void triangulate(Graph *g) { // ===Główna funkcja triangulacji: przypisuje wsp
             double angle = (i * M_PI) / 4.0;
             g->vertices[i].x = g->vertices[one_neighbor].x + w_one * cos(angle);
             g->vertices[i].y = g->vertices[one_neighbor].y + w_one * sin(angle);
-	
+
         } else if(!placed) { // Jeśli nie znaleziono pary sąsiadów, ustawia punkt względem jednego sąsiada pod kątem
             g->vertices[i].x = i; g->vertices[i].y = 0;
         }
