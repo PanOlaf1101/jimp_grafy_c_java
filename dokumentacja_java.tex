@@ -103,6 +103,22 @@ W przypadku wystąpienia błędu program wyświetla komunikat informacyjny, któ
 
 Dodatkowo zastosowano zabezpieczenia zapobiegające wykonaniu operacji, które mogłyby doprowadzić do nieprawidłowego działania aplikacji, na przykład uruchomienia algorytmu bez wcześniej wczytanego grafu.
 
+\section{Implementacja programu}
+
+Program został zaimplementowany jako aplikacja okienkowa służąca do wizualizacji oraz analizy grafów planarnych. Aplikacja została napisana w języku Java z wykorzystaniem biblioteki Swing odpowiedzialnej za obsługę graficznego interfejsu użytkownika. Program umożliwia wczytywanie grafów z plików tekstowych oraz binarnych oraz interaktywną wizualizację grafu.
+
+Architektura programu została podzielona na moduły odpowiedzialne za reprezentację grafu, implementację algorytmów rozmieszczania wierzchołków, obsługę interfejsu graficznego oraz operacje wejścia i wyjścia. Zastosowany podział zwiększa czytelność kodu oraz ułatwia dalszy rozwój aplikacji.
+
+\subsection{Wczytywanie danych}
+
+Program umożliwia wczytywanie grafów z plików tekstowych oraz binarnych. Odczyt danych realizowany jest przez klasy odpowiedzialne za obsługę wejścia i wyjścia plikowego. Podczas wczytywania pliku tekstowego każda linia interpretowana jest jako pojedyncza krawędź grafu, na podstawie której tworzona jest reprezentacja grafu w pamięci programu. Program sprawdza poprawność danych wejściowych oraz zabezpiecza się przed próbą wczytania niepoprawnego formatu pliku.
+
+\subsection{Reprezentacja grafu}
+
+\subsection{Wizualizacja grafu}
+
+\subsection{Obsługa zdarzeń}
+
 \section{Podsumowanie}
 
 Projekt stanowi kompletną aplikację do wizualizacji grafów planarnych z wykorzystaniem technologii Java SWING. System został podzielony na moduły odpowiadające za logikę, interfejs użytkownika oraz przetwarzanie danych. Zastosowano i zaimplementowano podejście obiektowe, wzorce projektowe, mechanizmy obsługi błędów oraz spójności interfejsu, które zwiększają niezawodność i komfort użytkowania. Aplikacja zapewnia intuicyjną obsługę dzięki graficznemu interfejsowi użytkownika oraz umożliwia interaktywną pracę z grafem, w tym jego edycję i wizualną analizę. Program został zaprojektowany z myślą o łatwym użyciu, co pozwala większości osobom użyć go bez problemów.
