@@ -1,0 +1,110 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=1.5cm,right=1.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{indentfirst}
+\usepackage{changepage}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\title{Dokumentacja programu do analizy grafów}
+\author{Olaf Mianowski \\ Julia Rombel}
+\date{2026-04-21}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Wprowadzenie}
+Zadanie polega na napisaniu dwóch aplikacji do wyznaczania grafów planarnych kolejno w C oraz w Javie. Każda z aplikacji ma wyznaczać współrzędne wierzchołków dla estetycznej wizualizacji grafu planarnego podanego w postaci listy krawędzi. Program stworzony w C obsługuje tylko powłokę tekstową użytkownika (TUI), zaś aplikacja w Javie ma pełną powłokę graficzną (GUI). Ta dokumentacja skupia się tylko na programie napisanym w języku Java.
+
+\section{Cel programu}
+
+Celem programu jest umożliwienie wizualizacji grafów planarnych w sposób przejrzysty i estetyczny z wykorzystaniem graficznego interfejsu użytkownika. Aplikacja pozwala na wczytanie grafu z pliku, przetworzenie go za pomocą wybranych algorytmów oraz przedstawienie wyników w formie graficznej. Istotnym założeniem jest interaktywność – użytkownik może modyfikować sposób prezentacji grafu oraz jego parametry wizualne w czasie rzeczywistym.
+
+\section{Zakres programu}
+
+Program umożliwia:
+\begin{itemize}
+    \item wczytywanie grafów z plików tekstowych oraz binarnych,
+    \item wizualizację grafu planarnego w dedykowanym komponencie graficznym,
+    \item interaktywną modyfikację widoku grafu (skalowanie, przesuwanie, zmiana stylu),
+    \item obsługę różnych sposobów wyświetlania węzłów i krawędzi.
+\end{itemize}
+
+\section{Użycie programu}
+
+Aplikacja napisana w języku Java wykorzystuje graficzny interfejs użytkownika oparty na bibliotece Swing. Interfejs umożliwia użytkownikowi wczytanie grafu z pliku, wybór algorytmu rozmieszczania wierzchołków oraz wizualną analizę grafu.
+
+Główne okno programu składa się z trzech podstawowych elementów:
+
+\begin{itemize}
+    \item paska menu,
+    \item panelu narzędziowego,
+    \item komponentu graficznego odpowiedzialnego za rysowanie grafu.
+\end{itemize}
+
+Z poziomu paska menu użytkownik może wczytać graf zapisany w pliku tekstowym lub binarnym oraz zapisać wyniki działania programu. Wczytanie grafu powoduje utworzenie jego reprezentacji w pamięci programu.
+
+Panel narzędziowy umożliwia wybór algorytmu wyznaczania współrzędnych wierzchołków oraz zmianę parametrów wizualizacji grafu. Po wybraniu algorytmu użytkownik może uruchomić proces obliczania współrzędnych, które następnie są wykorzystywane do narysowania grafu.
+
+Centralną częścią interfejsu jest komponent graficzny, w którym wyświetlany jest graf. Komponent ten został zaimplementowany jako własna klasa dziedzicząca po \verb|JPanel|. Metoda \verb|paintComponent()| została nadpisana w celu ręcznego rysowania wierzchołków oraz krawędzi grafu.
+
+Podczas pracy z programem użytkownik może:
+
+\begin{itemize}
+    \item zmieniać sposób wyświetlania wierzchołków i krawędzi,
+    \item włączać lub wyłączać wyświetlanie etykiet,
+    \item przesuwać widok grafu,
+    \item zmieniać skalę wyświetlania.
+\end{itemize}
+
+Interfejs reaguje na zdarzenia generowane przez użytkownika, takie jak kliknięcia przycisków lub wybór opcji z menu, dzięki czemu obsługa programu jest intuicyjna i interaktywna.
+
+\section{Architektura aplikacji Java}
+
+Aplikacja została zaprojektowana w sposób modułowy z wykorzystaniem podejścia obiektowego. Poszczególne elementy programu zostały podzielone na klasy odpowiedzialne za różne aspekty działania systemu.
+
+Do najważniejszych elementów architektury należą:
+
+\begin{itemize}
+    \item klasa reprezentująca graf oraz jego strukturę (np. wierzchołki i krawędzie),
+    \item klasa opisująca pojedynczą krawędź grafu,
+    \item klasa odpowiedzialna za implementację algorytmów wyznaczania współrzędnych,
+    \item klasa odpowiedzialna za interfejs graficzny,
+    \item klasa odpowiedzialna za rysowanie grafu w komponencie graficznym.
+\end{itemize}
+
+Główne okno programu zostało zaimplementowane jako klasa dziedzicząca po \verb|JFrame|. W tej klasie tworzony jest pasek menu, panel narzędziowy oraz komponent odpowiedzialny za wyświetlanie grafu.
+
+Komponent wizualizujący graf został zaimplementowany jako klasa dziedzicząca po \verb|JPanel|. W klasie tej nadpisano metodę \verb|paintComponent()|, w której wykonywane jest rysowanie wierzchołków oraz krawędzi grafu przy użyciu obiektu \verb|Graphics|.
+
+Algorytmy rozmieszczania wierzchołków zostały zaimplementowane w oddzielnych klasach, co umożliwia łatwe dodawanie nowych metod wizualizacji grafów w przyszłości. Panel narzędziowy umożliwia wybór jednego z dostępnych algorytmów oraz uruchomienie procesu obliczeń.
+
+Taki podział programu zwiększa czytelność kodu oraz ułatwia jego wykorzystanie.
+
+\section{Obsługa błędów}
+
+Aplikacja zostanie wyposażona w mechanizmy obsługi błędów, które mają na celu zwiększenie stabilności programu oraz poprawę komfortu użytkownika.
+
+Podczas wczytywania grafu program sprawdza poprawność danych wejściowych. W przypadku wykrycia nieprawidłowego formatu pliku lub niespójności danych użytkownik zostaje poinformowany o problemie za pomocą komunikatu dialogowego.
+
+Obsługa błędów została zaimplementowana z wykorzystaniem mechanizmu wyjątków dostępnego w języku Java. W szczególności zastosowano konstrukcję \verb|try-catch|, która pozwala na przechwycenie potencjalnych błędów podczas odczytu plików, przetwarzania danych oraz działania algorytmów.
+
+W przypadku wystąpienia błędu program wyświetla komunikat informacyjny, który pozwala użytkownikowi zidentyfikować przyczynę problemu. Dzięki temu możliwe jest szybkie podjęcie odpowiednich działań, takich jak ponowne wczytanie pliku lub zmiana parametrów programu.
+
+Dodatkowo zastosowano zabezpieczenia zapobiegające wykonaniu operacji, które mogłyby doprowadzić do nieprawidłowego działania aplikacji, na przykład uruchomienia algorytmu bez wcześniej wczytanego grafu.
+
+\section{Podsumowanie}
+
+Projekt stanowi kompletną aplikację do wizualizacji grafów planarnych z wykorzystaniem technologii Java SWING. System został podzielony na moduły odpowiadające za logikę, interfejs użytkownika oraz przetwarzanie danych. Zastosowano i zaimplementowano podejście obiektowe, wzorce projektowe, mechanizmy obsługi błędów oraz spójności interfejsu, które zwiększają niezawodność i komfort użytkowania. Aplikacja zapewnia intuicyjną obsługę dzięki graficznemu interfejsowi użytkownika oraz umożliwia interaktywną pracę z grafem, w tym jego edycję i wizualną analizę. Program został zaprojektowany z myślą o łatwym użyciu, co pozwala większości osobom użyć go bez problemów.
+
+\end{document}
