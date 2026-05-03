@@ -9,13 +9,6 @@ double **alloc_matrix(int n) {
 	return m;
 }
 
-void multiply_matrix(double **m, double **a, double **b, int n) {
-	for(int i = 0; i < n; ++i)
-		for(int j = 0; j < n; ++j)
-			for(int k = 0; k < n; ++k)
-				m[i][j] += a[i][k] * b[k][j];
-}
-
 void free_matrix(double **m, int n) {
 	if(m != NULL) {
 		for(int i = 0; i < n; ++i)

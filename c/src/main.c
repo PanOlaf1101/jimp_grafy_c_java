@@ -14,13 +14,13 @@
 
 struct Config conf;
 Graph g;
-double **A, **Q, **R;
+double **A, **Q, **T;
 Vector eigenvalues;
 
 void cleanup(void) {
 	free_matrix(A, g.n_vertices);
 	free_matrix(Q, g.n_vertices);
-	free_matrix(R, g.n_vertices);
+	free_matrix(T, g.n_vertices);
 	free_graph(&g);
 	free_vec(&eigenvalues);
 	if(conf.input_file != NULL && conf.input_file != stdin)
@@ -52,14 +52,14 @@ int main(int argc, char *argv[]) {
 	else
 		triangulate(&g);
 
-	for (int i = 0; i < g.n_vertices; i++) //output
+	/*for (int i = 0; i < g.n_vertices; i++) //output
 	{
 
 		fprintf(conf.output_file, "%d %.6f %.6f\n",
 				g.vertices[i].id + 1,
 				g.vertices[i].x,
 				g.vertices[i].y);
-	}
+	}*/
 
 	cleanup();
 	return 0;
