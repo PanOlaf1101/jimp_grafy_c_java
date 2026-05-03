@@ -127,7 +127,23 @@ Podstawowe klasy odpowiedzialne za reprezentację grafu obejmują:
 
 \subsection{Wizualizacja grafu}
 
+Wyświetlając graf, program pokazuje wierzchołki jako okręgi, a krawędzie są przedstawiane jako odcinki pomiędzy wierzchołkami. Użytkownik może w ustawieniach zmieniać poszczególne cechy graficznej reprezentacji grafu, takie jak:
+\begin{itemize}
+	\item kolor krawędzi (za pomocą menu \verb|JColorChooser|),
+	\item grubość krawędzi (za pomocą suwaka \verb|JSlider|),
+	\item widoczności etykiet na wierzchołkach i krawędziach (mając 3 opcje: tak, tylko po najechaniu myszką oraz nie. Opcje wybieramy za pomocą komponentu \verb|JRadioButton|).
+\end{itemize}
+
 \subsection{Obsługa zdarzeń}
+
+Program musi reagować na wiele zdarzeń, zwłaszcza na te dotyczące opsługi plików oraz zmiany ustawień. Zdarzenia są spowodowane interakcją użytkownika z programem. Zaliczamy do nich:
+\begin{itemize}
+	\item rozszerzenie okna aplikacji,
+	\item wybór pliku wejściowego lub wyjściowego,
+	\item zamknięcie okna aplikacji,
+	\item wprowadzenie zmian w wizualizacji grafu,
+	\item dodanie, usunięcie lub modyfikacja wierzchołka albo krawędzi.
+\end{itemize}
 
 \section{Podsumowanie}
 
