@@ -64,12 +64,16 @@ dkms.conf
 **/*.pdf
 **/*.synctex.gz
 **/*.toc
+_minted/
 
 #VS Code
 **/*.vscode
 
 #Java
 **/*.class
+**/*.iml
+**/.idea
+java/out/
 
 #Valgrind
 **/vgcore.*

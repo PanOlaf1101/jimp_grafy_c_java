@@ -8,6 +8,7 @@
 \usepackage{amsmath}
 \usepackage{tikz}
 \usepackage{xcolor}
+\usepackage{minted}
 
 \title{Dokumentacja programu do analizy grafów}
 \author{Olaf Mianowski \\ Julia Rombel}
@@ -112,6 +113,27 @@ Architektura programu została podzielona na moduły odpowiedzialne za reprezent
 \subsection{Wczytywanie danych}
 
 Program umożliwia wczytywanie grafów z plików tekstowych oraz binarnych. Odczyt danych realizowany jest przez klasy odpowiedzialne za obsługę wejścia i wyjścia plikowego. Podczas wczytywania pliku tekstowego każda linia interpretowana jest jako pojedyncza krawędź grafu, na podstawie której tworzona jest reprezentacja grafu w pamięci programu. Program sprawdza poprawność danych wejściowych oraz zabezpiecza się przed próbą wczytania niepoprawnego formatu pliku.
+
+\noindent{}Implementacja metody \verb|Graph.readFromFile|:
+
+\begin{minted}[linenos]{java}
+public void readFromFile(File file) {
+    try {
+        var sc = new Scanner(file);
+        while(sc.hasNextLine()) {
+            String[] tokens = sc.nextLine().split(" ");
+            int u = Integer.parseInt(tokens[1]);
+            int v = Integer.parseInt(tokens[2]);
+            double weight = Double.parseDouble(tokens[3]);
+            addEdge(tokens[0], u, v, weight);
+        }
+    } catch (FileNotFoundException e) {
+        throw new RuntimeException("Nie można otworzyć pliku " + file.getAbsolutePath());
+    } catch (NumberFormatException e) {
+        throw new RuntimeException("Niepoprawny format! " + e.getMessage());
+    }
+}
+\end{minted}
 
 \subsection{Reprezentacja grafu}
 
