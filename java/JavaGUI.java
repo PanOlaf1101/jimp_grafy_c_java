@@ -5,25 +5,11 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-
-/*enum Algorithm {
-	FRUCHTER,
-	TUTTE
-}*/
-
-/*class Config {
-	public File input_file;
-	public File output_file;
-	public Algorithm algo;
-	public Config() {}
-}*/
 
 public class JavaGUI extends JFrame {
 	private File input_file;
 	private File output_file;
 	private Graph graph;
-	private JDialog dialog;
 	private DrawingPanel drawingPanel;
 
 	private void Btn(String text, JPanel buttons, ActionListener listener) {
@@ -32,15 +18,21 @@ public class JavaGUI extends JFrame {
 		buttons.add(btn);
 	}
 
+	private void showError(String text) {
+		var dialog = new JDialog();
+		dialog.setSize(800, 100);
+		dialog.setLocationRelativeTo(this);
+		dialog.setTitle("Błąd");
+		dialog.add(new JLabel(text));
+		dialog.setVisible(true);
+	}
+
 	public JavaGUI() {
 		setTitle("Grafy");
 		setSize(800, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
 		graph = new Graph();
-		dialog = new JDialog();
-		dialog.setSize(200, 400);
-		dialog.setLocationRelativeTo(this);
 
 		JPanel buttons = new JPanel();
 		buttons.setLayout(new BoxLayout(buttons, BoxLayout.PAGE_AXIS));
@@ -50,31 +42,28 @@ public class JavaGUI extends JFrame {
 		textArea.setEditable(false);
 
 		Btn("Wybierz plik wejściowy", buttons, _ -> {
-			JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+			JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getDefaultDirectory());
 			input_file = chooser.getSelectedFile();
 			if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-				input_file = chooser.getSelectedFile();
-				textArea.setText(input_file.getAbsolutePath());
 				try {
+					input_file = chooser.getSelectedFile();
+					textArea.setText(input_file.getAbsolutePath());
 					graph.readFromFile(input_file);
 					graph.randomizeCoordinates();
 					drawingPanel = new DrawingPanel(graph);
 					drawingPanel.paintComponents(this.getGraphics());
-					add(drawingPanel);
+					add(drawingPanel, BorderLayout.CENTER);
 				} catch (FileNotFoundException e) {
-					dialog.add(new JLabel("Nie można otwrzyć pliku " + input_file.getAbsolutePath()));
-					dialog.setVisible(true);
+					showError("Nie można otwrzyć pliku " + input_file.getAbsolutePath());
 				} catch (NumberFormatException e) {
-					dialog.add(new JLabel("Niepoprawny format w pliku wejściowym!"));
-					dialog.setVisible(true);
+					showError("Niepoprawny format w pliku wejściowym!");
 				}
 			}
 		});
 
-		Btn("", buttons, _ -> IO.println("Saving..."));
 		Btn("exit", buttons, _ -> System.exit(0));
 
-		add(textArea, BorderLayout.CENTER);
+		add(textArea, BorderLayout.NORTH);
 		setVisible(true);
 	}
 

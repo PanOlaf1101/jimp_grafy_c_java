@@ -117,20 +117,14 @@ Program umożliwia wczytywanie grafów z plików tekstowych oraz binarnych. Odcz
 \noindent{}Implementacja metody \verb|Graph.readFromFile|:
 
 \begin{minted}[linenos]{java}
-public void readFromFile(File file) {
-    try {
-        var sc = new Scanner(file);
-        while(sc.hasNextLine()) {
-            String[] tokens = sc.nextLine().split(" ");
-            int u = Integer.parseInt(tokens[1]);
-            int v = Integer.parseInt(tokens[2]);
-            double weight = Double.parseDouble(tokens[3]);
-            addEdge(tokens[0], u, v, weight);
-        }
-    } catch (FileNotFoundException e) {
-        throw new RuntimeException("Nie można otworzyć pliku " + file.getAbsolutePath());
-    } catch (NumberFormatException e) {
-        throw new RuntimeException("Niepoprawny format! " + e.getMessage());
+public void readFromFile(File file) throws FileNotFoundException, NumberFormatException {
+    var sc = new Scanner(file);
+    while(sc.hasNextLine()) {
+        String[] tokens = sc.nextLine().split(" ");
+        int u = Integer.parseInt(tokens[1]);
+        int v = Integer.parseInt(tokens[2]);
+        double weight = Double.parseDouble(tokens[3]);
+        addEdge(tokens[0], u, v, weight);
     }
 }
 \end{minted}

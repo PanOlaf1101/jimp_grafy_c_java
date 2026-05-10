@@ -4,11 +4,11 @@ import java.util.*;
 
 public class Graph {
 	public final HashSet<Edge> edges;
-	public final ArrayList<Vertex> vertices;
+	public final HashMap<Short, Vertex> vertices;
 
 	public Graph() {
 		edges = new HashSet<>();
-		vertices = new ArrayList<>();
+		vertices = new HashMap<>();
 	}
 
 	public void addEdge(Edge e) {
@@ -20,43 +20,44 @@ public class Graph {
 		var r = new Random();
 		int size = vertices.size();
 		vertices.clear();
-		for(int i = 0; i < size; i++) {
-			vertices.add(new Vertex(r.nextInt(100), r.nextInt(100)));
+		for(short i = 1; i <= size; i++) {
+			vertices.put(i, new Vertex(r.nextInt(100) + 200, r.nextInt(100) + 200));
 		}
 	}
 
-	public void addEdge(String name, int u, int v, double weight) {
+	public void addEdge(String name, short u, short v, double weight) {
 		addEdge(new Edge(name, u, v, weight));
 	}
 
 	public void readFromFile(File file) throws FileNotFoundException, NumberFormatException {
 		var sc = new Scanner(file);
-		ArrayList<Edge>  edges = new ArrayList<>();
+		ArrayList<Edge> edge_list = new ArrayList<>();
 		while(sc.hasNextLine()) {
 			String[] tokens = sc.nextLine().split(" ");
-			int u = Integer.parseInt(tokens[1]);
-			int v = Integer.parseInt(tokens[2]);
+			short u = Short.parseShort(tokens[1]);
+			short v = Short.parseShort(tokens[2]);
 			double weight = Double.parseDouble(tokens[3]);
-			edges.add(new Edge(tokens[0], u, v, weight));
+			edge_list.add(new Edge(tokens[0], u, v, weight));
+			vertices.putIfAbsent(u, new Vertex(500, 500));
+			vertices.putIfAbsent(v, new Vertex(500, 500));
 		}
-		for(Edge e : edges)
+		for(Edge e : edge_list)
 			addEdge(e);
-		edges.clear();
+		edge_list.clear();
 	}
 }
 
 class Edge {
 	public String name;
-	public int u;
-	public int v;
+	public short u;
+	public short v;
 	public double weight;
-	static private int biggest_v = 0;
 
-	public Edge(String name, int _u, int _v, double weight) throws IllegalArgumentException {
-		if(_u < 1 || _v < 1)
+	public Edge(String name, short u, short v, double weight) throws IllegalArgumentException {
+		if(u < 1 || v < 1)
 			throw new IllegalArgumentException("Numery wierzchołków muszą być większe od 0");
-		u = _u - 1;
-		v = _v - 1;
+		this.u = u;
+		this.v = v;
 		this.weight = weight;
 		this.name = name;
 		if(u > v) {
@@ -64,8 +65,6 @@ class Edge {
 			v ^= u;
 			u ^= v;
 		}
-		if(v >= biggest_v)
-			biggest_v = v+1;
 	}
 
 	public boolean equals(Edge e) {
@@ -87,7 +86,7 @@ class Edge {
 
 	@Override
 	public int hashCode() {
-		return u * biggest_v + v;
+		return (u << 16) + v;
 	}
 }
 
