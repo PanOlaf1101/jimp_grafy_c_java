@@ -1,12 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Scanner;
+import java.util.*;
 
 public class Graph {
-	HashSet<Edge> edges;
-	ArrayList<Vertex> vertices;
+	public final HashSet<Edge> edges;
+	public final ArrayList<Vertex> vertices;
 
 	public Graph() {
 		edges = new HashSet<>();
@@ -17,25 +15,33 @@ public class Graph {
 		edges.add(e);
 	}
 
+	//Do testowania
+	public void randomizeCoordinates() {
+		var r = new Random();
+		int size = vertices.size();
+		vertices.clear();
+		for(int i = 0; i < size; i++) {
+			vertices.add(new Vertex(r.nextInt(100), r.nextInt(100)));
+		}
+	}
+
 	public void addEdge(String name, int u, int v, double weight) {
 		addEdge(new Edge(name, u, v, weight));
 	}
 
-	public void readFromFile(File file) {
-		try {
-			var sc = new Scanner(file);
-			while(sc.hasNextLine()) {
-				String[] tokens = sc.nextLine().split(" ");
-				int u = Integer.parseInt(tokens[1]);
-				int v = Integer.parseInt(tokens[2]);
-				double weight = Double.parseDouble(tokens[3]);
-				addEdge(tokens[0], u, v, weight);
-			}
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Nie można otworzyć pliku " + file.getAbsolutePath());
-		} catch (NumberFormatException e) {
-			throw new RuntimeException("Niepoprawny format! " + e.getMessage());
+	public void readFromFile(File file) throws FileNotFoundException, NumberFormatException {
+		var sc = new Scanner(file);
+		ArrayList<Edge>  edges = new ArrayList<>();
+		while(sc.hasNextLine()) {
+			String[] tokens = sc.nextLine().split(" ");
+			int u = Integer.parseInt(tokens[1]);
+			int v = Integer.parseInt(tokens[2]);
+			double weight = Double.parseDouble(tokens[3]);
+			edges.add(new Edge(tokens[0], u, v, weight));
 		}
+		for(Edge e : edges)
+			addEdge(e);
+		edges.clear();
 	}
 }
 
@@ -46,9 +52,9 @@ class Edge {
 	public double weight;
 	static private int biggest_v = 0;
 
-	public Edge(String name, int _u, int _v, double weight) {
+	public Edge(String name, int _u, int _v, double weight) throws IllegalArgumentException {
 		if(_u < 1 || _v < 1)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Numery wierzchołków muszą być większe od 0");
 		u = _u - 1;
 		v = _v - 1;
 		this.weight = weight;
@@ -58,7 +64,7 @@ class Edge {
 			v ^= u;
 			u ^= v;
 		}
-		if(v > biggest_v)
+		if(v >= biggest_v)
 			biggest_v = v+1;
 	}
 
@@ -85,4 +91,3 @@ class Edge {
 	}
 }
 
-record Vertex(int id, double x, double y) {}
