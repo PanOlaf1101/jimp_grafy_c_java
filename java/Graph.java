@@ -16,12 +16,12 @@ public class Graph {
 	}
 
 	//Do testowania
-	public void randomizeCoordinates() {
+	public void randomizeCoordinates(int x, int y, int w, int h) {
 		var r = new Random();
 		int size = vertices.size();
 		vertices.clear();
 		for(short i = 1; i <= size; i++) {
-			vertices.put(i, new Vertex(r.nextInt(100) + 200, r.nextInt(100) + 200));
+			vertices.put(i, new Vertex(r.nextInt(200) + x + w/2 - 100, r.nextInt(200) + y + h/2 - 100));
 		}
 	}
 

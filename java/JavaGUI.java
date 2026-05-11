@@ -25,6 +25,7 @@ public class JavaGUI extends JFrame {
 		dialog.setTitle("Błąd");
 		dialog.add(new JLabel(text));
 		dialog.setVisible(true);
+		dialog.setResizable(false);
 	}
 
 	public JavaGUI() {
@@ -32,14 +33,21 @@ public class JavaGUI extends JFrame {
 		setSize(800, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
+		setResizable(false);
+		setVisible(true);
 		graph = new Graph();
 
 		JPanel buttons = new JPanel();
 		buttons.setLayout(new BoxLayout(buttons, BoxLayout.PAGE_AXIS));
-
 		add(buttons,  BorderLayout.WEST);
+
 		JTextArea textArea = new JTextArea();
 		textArea.setEditable(false);
+
+		drawingPanel = new DrawingPanel();
+		drawingPanel.setBackground(new Color(0xDF, 0xDF, 0xDF));
+		drawingPanel.setVisible(true);
+		add(drawingPanel, BorderLayout.CENTER);
 
 		Btn("Wybierz plik wejściowy", buttons, _ -> {
 			JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getDefaultDirectory());
@@ -49,10 +57,9 @@ public class JavaGUI extends JFrame {
 					input_file = chooser.getSelectedFile();
 					textArea.setText(input_file.getAbsolutePath());
 					graph.readFromFile(input_file);
-					graph.randomizeCoordinates();
-					drawingPanel = new DrawingPanel(graph);
+					graph.randomizeCoordinates(drawingPanel.getX(), drawingPanel.getY(),  drawingPanel.getWidth(), drawingPanel.getHeight());
+					drawingPanel.setGraph(graph);
 					drawingPanel.paintComponents(this.getGraphics());
-					add(drawingPanel, BorderLayout.CENTER);
 				} catch (FileNotFoundException e) {
 					showError("Nie można otwrzyć pliku " + input_file.getAbsolutePath());
 				} catch (NumberFormatException e) {
@@ -61,10 +68,8 @@ public class JavaGUI extends JFrame {
 			}
 		});
 
-		Btn("exit", buttons, _ -> System.exit(0));
 
-		add(textArea, BorderLayout.NORTH);
-		setVisible(true);
+		Btn("exit", buttons, _ -> System.exit(0));
 	}
 
 	static void main(String[] args) {
