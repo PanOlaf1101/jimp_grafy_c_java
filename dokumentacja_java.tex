@@ -76,20 +76,26 @@ Aplikacja została zaprojektowana w sposób modułowy z wykorzystaniem podejści
 Do najważniejszych elementów architektury należą:
 
 \begin{itemize}
-    \item klasa reprezentująca graf oraz jego strukturę (np. wierzchołki i krawędzie),
-    \item klasa opisująca pojedynczą krawędź grafu,
-    \item klasa odpowiedzialna za implementację algorytmów wyznaczania współrzędnych,
-    \item klasa odpowiedzialna za interfejs graficzny,
-    \item klasa odpowiedzialna za rysowanie grafu w komponencie graficznym.
+    \item \textbf{Klasa reprezentująca graf oraz jego strukturę (wierzchołki i krawędzie):}  
+    \texttt{Graph} — przechowuje zbiór wierzchołków (\texttt{HashMap<Short, Vertex>}) oraz krawędzi (\texttt{HashSet<Edge>}), a także obsługuje ich dodawanie i wczytywanie z pliku.
+
+    \item \textbf{Klasa opisująca pojedynczą krawędź grafu:} \texttt{Edge} — zawiera pola: nazwa, wierzchołek startowy (\texttt{u}), końcowy (\texttt{v}) oraz wagę krawędzi.
+
+    \item \textbf{Klasa reprezentująca wierzchołek grafu:}  
+    \texttt{Vertex} — rekord przechowujący współrzędne (\texttt{x, y}) pojedynczego wierzchołka.
+
+    \item \textbf{Klasa odpowiedzialna za implementację algorytmu wyznaczania współrzędnych wierzchołków:}  \texttt{Graph} — zawiera metodę \texttt{randomizeCoordinates(...)} generator losowych współrzędnych dla wszystkich wierzchołków grafu w zadanym obszarze. Przypisuje każdemu wierzchołkowi nowe pozycje na podstawie pseudolosowych wartości.
+
+    \item \textbf{Klasa odpowiedzialna za interfejs graficzny:}  
+    \texttt{JavaGUI} — odpowiada za okno aplikacji, przyciski, wybór pliku i integrację z grafem.
+
+    \item \textbf{Klasa odpowiedzialna za rysowanie grafu w komponencie graficznym:}  
+    \texttt{DrawingPanel} — dziedziczy po \texttt{JPanel} i implementuje metodę rysującą wierzchołki i krawędzie przy użyciu \texttt{Graphics2D}.
 \end{itemize}
 
 Główne okno programu zostało zaimplementowane jako klasa dziedzicząca po \verb|JFrame|. W tej klasie tworzony jest pasek menu, panel narzędziowy oraz komponent odpowiedzialny za wyświetlanie grafu.
 
 Komponent wizualizujący graf został zaimplementowany jako klasa dziedzicząca po \verb|JPanel|. W klasie tej nadpisano metodę \verb|paintComponent()|, w której wykonywane jest rysowanie wierzchołków oraz krawędzi grafu przy użyciu obiektu \verb|Graphics|.
-
-Algorytmy rozmieszczania wierzchołków zostały zaimplementowane w oddzielnych klasach, co umożliwia łatwe dodawanie nowych metod wizualizacji grafów w przyszłości. Panel narzędziowy umożliwia wybór jednego z dostępnych algorytmów oraz uruchomienie procesu obliczeń.
-
-Taki podział programu zwiększa czytelność kodu oraz ułatwia jego wykorzystanie.
 
 \section{Obsługa błędów}
 
