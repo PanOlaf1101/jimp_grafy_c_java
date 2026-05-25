@@ -4,18 +4,16 @@ import java.awt.geom.Ellipse2D;
 import java.util.Random;
 
 public class DrawingPanel extends JPanel {
-	private Graph graph;
 
-	public void setGraph(Graph graph) {
-		this.graph = graph;
+	public DrawingPanel() {
+		super();
+		setBackground(new Color(0xDF, 0xDF, 0xDF));
+		setVisible(true);
 	}
 
-	@Override
-	public void paintComponents(Graphics g) {
-		super.paintComponents(g);
-		IO.println("Number of edges: " + graph.edges.size());
-		IO.println("Number of vertices: " + graph.vertices.size());
-		Graphics2D g2d = (Graphics2D) g;
+	public void paintGraph(Graph graph) {
+		paint(getGraphics());
+		Graphics2D g2d = (Graphics2D) getGraphics();
 		g2d.setStroke(new BasicStroke(2));
 		var r = new Random();
 		for(Edge i : graph.edges) {
@@ -23,8 +21,6 @@ public class DrawingPanel extends JPanel {
 				g2d.drawLine(graph.vertices.get(i.u).x(), graph.vertices.get(i.u).y(), graph.vertices.get(i.v).x(), graph.vertices.get(i.v).y());
 			} catch(NullPointerException e) {
 				System.err.println(e.getMessage());
-			} finally {
-				IO.println(graph.vertices.get(i.u).x() + " " + graph.vertices.get(i.u).y() + "\t" + graph.vertices.get(i.v).x() + " " + graph.vertices.get(i.v).y());
 			}
 		}
 		graph.vertices.forEach((k, v) -> {
