@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import javax.swing.*;
@@ -59,6 +61,27 @@ public class JavaGUI extends JFrame {
 					graph.randomizeCoordinates(drawingPanel.getX(), drawingPanel.getY(),  drawingPanel.getWidth(), drawingPanel.getHeight());
 					drawingPanel.setGraph(graph);
 					drawingPanel.paintComponents(this.getGraphics());
+					graph.vertices.forEach((k, v) -> {
+						drawingPanel.addMouseListener(new MouseAdapter() {
+							private boolean dragged = false;
+							private int x = v.x(), y = v.y();
+							@Override
+							public void mousePressed(MouseEvent e) {
+								if(Math.abs(x - e.getX()) <= 5 && Math.abs(y - e.getY()) <= 5)
+									dragged = true;
+							}
+							@Override
+							public void mouseReleased(MouseEvent e) {
+								if(dragged) {
+									dragged = false;
+									graph.vertices.replace(k, new Vertex(e.getX(), e.getY()));
+									x = e.getX();
+									y = e.getY();
+									drawingPanel.repaint();
+								}
+							}
+						});
+					});
 				} catch (FileNotFoundException e) {
 					showError("Nie można otwrzyć pliku " + input_file.getAbsolutePath());
 				} catch (NumberFormatException e) {
