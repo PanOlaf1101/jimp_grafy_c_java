@@ -52,14 +52,14 @@ int main(int argc, char *argv[]) {
 	else
 		triangulate(&g);
 
-	/*for (int i = 0; i < g.n_vertices; i++) //output
+	for (int i = 0; i < g.n_vertices; i++) //output
 	{
 
 		fprintf(conf.output_file, "%d %.6f %.6f\n",
 				g.vertices[i].id + 1,
 				g.vertices[i].x,
 				g.vertices[i].y);
-	}*/
+	}
 
 	cleanup();
 	return 0;
